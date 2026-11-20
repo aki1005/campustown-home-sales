@@ -133,7 +133,8 @@
     const oneDecimal = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1, minimumFractionDigits: 1 });
 
     function parseCsv(text) {
-      const rows = [], row = [];
+      const rows = [];
+      let row = [];
       let value = "", quoted = false;
       for (let i = 0; i < text.length; i++) {
         const char = text[i], next = text[i + 1];
@@ -144,7 +145,7 @@
           if (char === "\r" && next === "\n") i++;
           row.push(value);
           if (row.some(cell => cell !== "")) rows.push(row);
-          row.length = 0; value = "";
+          row = []; value = "";
         } else value += char;
       }
       if (value !== "" || row.length) { row.push(value); rows.push(row); }
