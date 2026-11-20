@@ -3,254 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>College-Town Home Sales Explorer</title>
-  <link rel="icon" href="data:,">
+  <title>College-Town Home Sales Questions</title>
   <style>
-    :root {
-      color-scheme: light;
-      --ink: #17233c;
-      --muted: #5e6b82;
-      --line: #dce3ee;
-      --panel: #ffffff;
-      --page: #f4f7fb;
-      --accent: #2864c7;
-      --accent-dark: #174b9d;
-      --accent-soft: #dbe9ff;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--page);
-      color: var(--ink);
-      font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    .wrap { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
-
-    header {
-      padding: 4.5rem 0 3.25rem;
-      background: linear-gradient(135deg, #102d62, #2864c7);
-      color: #fff;
-    }
-    header .subtle { color: #b9d1ff; }
-
-    h1, h2, p { margin-top: 0; }
-    h1 { max-width: 760px; margin-bottom: 1rem; font-size: clamp(2.2rem, 6vw, 4.4rem); line-height: 1.04; letter-spacing: -0.04em; }
-    header p { max-width: 680px; margin-bottom: 0; color: #dfeaff; font-size: 1.1rem; }
-
-    main { padding: 2rem 0 4rem; }
-    .intro, .panel {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--panel);
-      box-shadow: 0 10px 30px rgb(23 35 60 / 6%);
-    }
-    .intro { padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
-    .intro strong { color: var(--accent-dark); }
-    .panel { padding: 1.5rem; margin-bottom: 1.5rem; }
-    h2 { margin-bottom: .35rem; font-size: 1.35rem; }
-    .subtle, .status { color: var(--muted); }
-    .status { min-height: 1.5em; margin: .75rem 0 0; }
-
-    .chart-scroll { overflow-x: auto; padding-bottom: .25rem; }
-    svg { display: block; min-width: 720px; width: 100%; height: auto; }
-    .bar { fill: var(--accent); }
-    .bar:hover { fill: var(--accent-dark); }
-    .axis-label, .value-label { fill: var(--muted); font-size: 12px; }
-    .city-label { fill: var(--ink); font-size: 13px; font-weight: 600; }
-    .gridline { stroke: var(--line); stroke-width: 1; }
-
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: .8rem .65rem; border-bottom: 1px solid var(--line); text-align: left; }
-    th { color: var(--muted); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
-    td:nth-child(2), td:nth-child(3), th:nth-child(2), th:nth-child(3) { text-align: right; white-space: nowrap; }
-    tbody tr:last-child td { border-bottom: 0; }
-
-    footer { padding: 0 0 2.5rem; color: var(--muted); font-size: .9rem; }
-    footer a { color: var(--accent-dark); }
-    .error { color: #a52b2b; }
-
-    @media (max-width: 640px) {
-      .wrap { width: min(100% - 1rem, 1120px); }
-      header { padding: 3rem 0 2.5rem; }
-      main { padding-top: 1rem; }
-      .panel { padding: 1rem; border-radius: 14px; }
-      th, td { padding: .7rem .45rem; }
-    }
+    :root{color-scheme:light;--ink:#17233c;--muted:#5e6b82;--line:#dce3ee;--panel:#fff;--page:#f4f7fb;--accent:#2864c7;--accent2:#d76b35;--soft:#dbe9ff}
+    *{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--ink);font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .wrap{width:min(1160px,calc(100% - 2rem));margin:auto}header{padding:3.5rem 0 2.5rem;background:linear-gradient(135deg,#102d62,#2864c7);color:#fff}
+    h1{max-width:850px;margin:0 0 1rem;font-size:clamp(2.2rem,6vw,4.2rem);line-height:1.04;letter-spacing:-.04em}h2{margin:0 0 .35rem;font-size:1.3rem}h3{margin:1rem 0 .35rem;font-size:1rem}.subtle,.status{color:var(--muted)}header p{max-width:800px;margin:0;color:#dfeaff;font-size:1.08rem}
+    main{padding:2rem 0 4rem}.intro,.panel{border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:0 10px 30px rgb(23 35 60 / 6%)}.intro{padding:1.2rem 1.5rem;margin-bottom:1.5rem}.panel{padding:1.35rem 1.5rem;margin-bottom:1.5rem}.intro strong{color:#174b9d}
+    .question{border-top:5px solid var(--accent)}.answer{font-size:1.08rem;margin:.5rem 0 1rem}.controls{display:flex;flex-wrap:wrap;gap:.8rem 1.2rem;align-items:end;margin:1rem 0}.control{display:flex;flex-direction:column;gap:.25rem;font-weight:600}.control input,.control select{min-height:2.35rem;padding:.35rem .5rem;border:1px solid #b9c5d8;border-radius:7px;background:#fff;color:var(--ink);font:inherit}
+    .chart-scroll{overflow-x:auto;padding-bottom:.25rem}svg{display:block;min-width:700px;width:100%;height:auto}.gridline{stroke:var(--line);stroke-width:1}.axis-label,.value-label{fill:var(--muted);font-size:12px}.city-label{fill:var(--ink);font-size:12px;font-weight:600}.bar{fill:var(--accent)}.bar.alt{fill:var(--accent2)}.bar:hover{fill:#174b9d}.dot{fill:var(--accent);stroke:#fff;stroke-width:2}.line{fill:none;stroke:var(--accent);stroke-width:3}.line-point{fill:var(--accent)}.slope{stroke:var(--accent);stroke-width:3}.slope.changed{stroke:var(--accent2)}.legend{font-size:.9rem;color:var(--muted)}table{width:100%;border-collapse:collapse}.table-wrap{overflow-x:auto}th,td{padding:.62rem .55rem;border-bottom:1px solid var(--line);text-align:left}th{color:var(--muted);font-size:.75rem;letter-spacing:.05em;text-transform:uppercase}td:not(:first-child),th:not(:first-child){text-align:right;white-space:nowrap}tbody tr:last-child td{border-bottom:0}.status{min-height:1.4em;margin:.7rem 0 0}.error{color:#a52b2b}footer{padding:0 0 2.5rem;color:var(--muted);font-size:.9rem}footer a{color:#174b9d}
+    @media(max-width:640px){.wrap{width:calc(100% - 1rem)}header{padding:2.8rem 0 2rem}.panel{padding:1rem;border-radius:14px}th,td{padding:.55rem .35rem}}
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <p class="subtle">A data view of 35,442 completed sales around college towns</p>
-      <h1>College-Town Home Sales Explorer</h1>
-      <p>Compare the typical sale price and volume of homes sold across the cities in this dataset.</p>
-    </div>
-  </header>
-
+  <header><div class="wrap"><p>Data-driven analysis of 35,442 completed sales around college towns</p><h1>College-Town Home Sales: Q1–Q10</h1><p>Each answer is computed in the browser from the supplied CSV. Charts include exact values in labels or tooltips.</p></div></header>
   <main class="wrap">
-    <section class="intro" aria-label="Filtering rule">
-      <strong>How to read these numbers:</strong>
-      Every count and price statistic on this page uses each row as one sale, without deduplicating
-      street addresses. We include sale prices from <strong>$10,000 through $5,000,000</strong>,
-      inclusive, to leave out the implausible low and high values described in the data notes.
-    </section>
-
-    <section class="panel">
-      <h2>Median sale price by city and state</h2>
-      <p class="subtle">Bars are ordered from highest to lowest median. Hover or focus a bar for its exact value.</p>
-      <div class="chart-scroll">
-        <svg id="chart" role="img" aria-labelledby="chart-title chart-description">
-          <title id="chart-title">Median sale price by city and state</title>
-          <desc id="chart-description">A horizontal bar chart populated from the home sales CSV.</desc>
-        </svg>
-      </div>
-      <p id="chart-status" class="status" role="status">Loading the dataset…</p>
-    </section>
-
-    <section class="panel">
-      <h2>Eligible sales by city and state</h2>
-      <p class="subtle">Eligible sale count and median sale price after applying the stated price filter.</p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th scope="col">City and state</th><th scope="col">Eligible sales</th><th scope="col">Median sale price</th></tr>
-          </thead>
-          <tbody id="results"></tbody>
-        </table>
-      </div>
-    </section>
+    <section class="intro"><strong>Data rules:</strong> Rows are sales, not unique addresses. Unless a question says otherwise, price-scoped answers use sale prices from $10,000 through $5,000,000 inclusive. Q2 and the all-row side of Q3 intentionally use every sale price. Missing dates are excluded only when a calculation needs that date.</section>
+    <div id="app"><p class="status">Loading the dataset…</p></div>
   </main>
-
-  <footer class="wrap">
-    <p>
-      <strong>Source:</strong> College-town home sales dataset, version 1.0 (2026).
-      University of Illinois-Deloitte Foundation Center for Business Emerging Technologies.
-      Data collected March 2026. See the <a href="docs/data_description_sheet.md">data description sheet</a>
-      for field definitions and limitations.
-    </p>
-  </footer>
-
-  <script>
-    const PRICE_MIN = 10000;
-    const PRICE_MAX = 5000000;
-    const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-    const integer = new Intl.NumberFormat("en-US");
-
-    function parseCsv(text) {
-      const rows = [];
-      let row = [];
-      let value = "";
-      let quoted = false;
-      for (let i = 0; i < text.length; i += 1) {
-        const char = text[i];
-        const next = text[i + 1];
-        if (char === '"' && quoted && next === '"') {
-          value += '"';
-          i += 1;
-        } else if (char === '"') {
-          quoted = !quoted;
-        } else if (char === "," && !quoted) {
-          row.push(value);
-          value = "";
-        } else if ((char === "\n" || char === "\r") && !quoted) {
-          if (char === "\r" && next === "\n") i += 1;
-          row.push(value);
-          if (row.some((cell) => cell !== "")) rows.push(row);
-          row = [];
-          value = "";
-        } else {
-          value += char;
-        }
-      }
-      if (value !== "" || row.length) {
-        row.push(value);
-        rows.push(row);
-      }
-      const headers = rows.shift();
-      return rows.map((cells) => Object.fromEntries(headers.map((header, index) => [header, cells[index] ?? ""])));
-    }
-
-    function median(values) {
-      const sorted = [...values].sort((a, b) => a - b);
-      const middle = Math.floor(sorted.length / 2);
-      return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
-    }
-
-    function summarize(rows) {
-      const groups = new Map();
-      rows.forEach((row) => {
-        const price = Number(row.sale_price);
-        if (!Number.isFinite(price) || price < PRICE_MIN || price > PRICE_MAX) return;
-        const key = `${row.city}\u0000${row.state}`;
-        if (!groups.has(key)) groups.set(key, { city: row.city, state: row.state, prices: [] });
-        groups.get(key).prices.push(price);
-      });
-      return [...groups.values()]
-        .map((group) => ({ ...group, count: group.prices.length, median: median(group.prices) }))
-        .sort((a, b) => b.median - a.median || a.city.localeCompare(b.city));
-    }
-
-    function renderTable(summary) {
-      document.querySelector("#results").innerHTML = summary.map((group) => `
-        <tr>
-          <td>${group.city}, ${group.state}</td>
-          <td>${integer.format(group.count)}</td>
-          <td>${currency.format(group.median)}</td>
-        </tr>
-      `).join("");
-    }
-
-    function renderChart(summary) {
-      const svg = document.querySelector("#chart");
-      const width = 900;
-      const left = 170;
-      const right = 95;
-      const top = 18;
-      const rowHeight = 34;
-      const chartHeight = top + summary.length * rowHeight + 20;
-      const plotWidth = width - left - right;
-      const max = Math.ceil(Math.max(...summary.map((group) => group.median)) / 100000) * 100000;
-      const ticks = 5;
-      svg.setAttribute("viewBox", `0 0 ${width} ${chartHeight}`);
-      const parts = [];
-      for (let tick = 0; tick <= ticks; tick += 1) {
-        const x = left + (plotWidth * tick / ticks);
-        const value = max * tick / ticks;
-        parts.push(`<line class="gridline" x1="${x}" y1="${top - 4}" x2="${x}" y2="${chartHeight - 18}"></line>`);
-        parts.push(`<text class="axis-label" x="${x}" y="${chartHeight - 2}" text-anchor="middle">${currency.format(value)}</text>`);
-      }
-      summary.forEach((group, index) => {
-        const y = top + index * rowHeight;
-        const barWidth = plotWidth * group.median / max;
-        const label = `${group.city}, ${group.state}`;
-        parts.push(`<text class="city-label" x="${left - 12}" y="${y + 17}" text-anchor="end">${label}</text>`);
-        parts.push(`<rect class="bar" x="${left}" y="${y + 4}" width="${barWidth}" height="22" rx="5"><title>${label}: ${currency.format(group.median)}</title></rect>`);
-        parts.push(`<text class="value-label" x="${left + barWidth + 8}" y="${y + 19}">${currency.format(group.median)}</text>`);
-      });
-      svg.innerHTML = `<title id="chart-title">Median sale price by city and state</title><desc id="chart-description">Horizontal bars compare ${summary.length} cities using eligible sales only.</desc>${parts.join("")}`;
-    }
-
-    async function load() {
-      const status = document.querySelector("#chart-status");
-      try {
-        const response = await fetch("data/college_town_home_sales.csv");
-        if (!response.ok) throw new Error(`Dataset request failed (${response.status})`);
-        const summary = summarize(parseCsv(await response.text()));
-        if (!summary.length) throw new Error("No eligible sales were found.");
-        renderTable(summary);
-        renderChart(summary);
-        status.textContent = `${integer.format(summary.reduce((total, group) => total + group.count, 0))} eligible sales across ${summary.length} cities.`;
-      } catch (error) {
-        status.className = "status error";
-        status.textContent = `Unable to load the dataset: ${error.message}`;
-      }
-    }
-
-    load();
-  </script>
+  <footer class="wrap"><p><strong>Source:</strong> College-town home sales dataset, version 1.0 (2026). University of Illinois-Deloitte Foundation Center for Business Emerging Technologies. See the <a href="docs/data_description_sheet.md">data description sheet</a> for definitions and limitations.</p></footer>
+<script>
+const PRICE_MIN=10000,PRICE_MAX=5000000, currency=new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}), integer=new Intl.NumberFormat("en-US"), percent=new Intl.NumberFormat("en-US",{style:"percent",maximumFractionDigits:1});
+function parseCsv(text){const rows=[];let row=[],value="",quoted=false;for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];if(c=='"'&&quoted&&n=='"'){value+='"';i++}else if(c=='"')quoted=!quoted;else if(c==","&&!quoted){row.push(value);value=""}else if((c=="\n"||c=="\r")&&!quoted){if(c=="\r"&&n=="\n")i++;row.push(value);if(row.some(v=>v!=""))rows.push(row);row=[];value=""}else value+=c}if(value||row.length){row.push(value);rows.push(row)}const headers=rows.shift();return rows.map(r=>Object.fromEntries(headers.map((h,i)=>[h,r[i]??""])));}
+function num(v){const n=Number(v);return Number.isFinite(n)?n:null}function median(a){if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),m=Math.floor(s.length/2);return s.length%2?s[m]:(s[m-1]+s[m])/2}function mean(a){return a.reduce((x,y)=>x+y,0)/a.length}function priceOk(r){const p=num(r.sale_price);return p!==null&&p>=PRICE_MIN&&p<=PRICE_MAX}function group(rows,key,mapper){const m=new Map();rows.forEach(r=>{const k=key(r);if(!m.has(k))m.set(k,[]);m.get(k).push(mapper(r))});return m}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function axis(parts,left,top,w,h,max,ticks=5){for(let i=0;i<=ticks;i++){const x=left+w*i/ticks,v=max*i/ticks;parts.push(`<line class="gridline" x1="${x}" y1="${top}" x2="${x}" y2="${top+h}"/><text class="axis-label" x="${x}" y="${top+h+18}" text-anchor="middle">${esc(currency.format(v))}</text>`)}}
+function barChart(id,items,value,max,format=currency){const svg=document.querySelector("#"+id),width=920,left=205,right=115,top=12,row=32,h=items.length*row+25,w=width-left-right,parts=[];max=max||Math.max(...items.map(value),1);axis(parts,left,top,w,h-25,max);items.forEach((d,i)=>{const y=top+i*row,v=value(d),bw=w*v/max,label=d.label||d.name;parts.push(`<text class="city-label" x="${left-10}" y="${y+18}" text-anchor="end">${esc(label)}</text><rect class="bar" x="${left}" y="${y+4}" width="${bw}" height="21" rx="4"><title>${esc(label)}: ${esc(format(v))}</title></rect><text class="value-label" x="${left+bw+7}" y="${y+19}">${esc(format(v))}</text>`)});svg.setAttribute("viewBox",`0 0 ${width} ${h+25}`);svg.innerHTML=parts.join("")}
+function table(headers,rows){return `<div class="table-wrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((v,i)=>`<td>${i?esc(v):esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`}
+function panel(n,title,body){return `<section class="panel question"><h2>Q${n}. ${title}</h2>${body}</section>`}
+function select(id,label,values){return `<label class="control">${label}<select id="${id}">${values.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("")}</select></label>`}function input(id,label,value,min="",step="1"){return `<label class="control">${label}<input id="${id}" type="number" value="${value}" min="${min}" step="${step}"></label>`}
+function q1(rows){const a=[...group(rows.filter(priceOk),r=>r.city+", "+r.state,r=>num(r.sale_price))].map(([label,v])=>({label, v:median(v)})).sort((x,y)=>y.v-x.v);return panel(1,"Which city has the highest median sale price?",`<p class="answer"><strong>${esc(a[0].label)}</strong> has the highest median: <strong>${currency.format(a[0].v)}</strong>.</p><div class="chart-scroll"><svg id="q1chart" role="img" aria-label="Median sale price for every city"></svg></div><p class="legend">Eligible sales: $10,000–$5,000,000 inclusive. Bars are ordered high to low.</p>`)}
+function q2(rows){const a=[...group(rows,r=>r.city+", "+r.state,r=>num(r.sale_price)).entries()].map(([label,v])=>({label,mean:mean(v),median:median(v)})).map(d=>({...d,gap:(d.mean-d.median)/d.median})).sort((x,y)=>y.gap-x.gap);return panel(2,"Which city's mean is furthest above its median?",`<p class="answer"><strong>${esc(a[0].label)}</strong> has the largest gap: ${percent.format(a[0].gap)} (mean ${currency.format(a[0].mean)} vs. median ${currency.format(a[0].median)}).</p><p>The gap is largest because a small number of unusually high-priced sales pull the mean upward while the median is resistant to those high-end values. This calculation uses all sale prices, as requested.</p><div class="chart-scroll"><svg id="q2chart" role="img" aria-label="Mean minus median percentage for every city"></svg></div>${table(["City","Mean","Median","Gap"],a.map(d=>[d.label,currency.format(d.mean),currency.format(d.median),percent.format(d.gap)]))}`)}
+function q3(rows){const make=rs=>[...group(rs,r=>r.city+", "+r.state,r=>num(r.sale_price)).entries()].map(([label,v])=>({label,mean:mean(v)})).sort((a,b)=>b.mean-a.mean);const all=make(rows),filtered=make(rows.filter(priceOk)),ranks=new Map(filtered.map((d,i)=>[d.label,i+1]));const changes=all.map((d,i)=>({...d,all:i+1,filtered:ranks.get(d.label)})).filter(d=>d.all!==d.filtered);return panel(3,"How do city mean-price ranks change with the price rule?",`<p class="answer">${changes.length?changes.map(d=>`<strong>${esc(d.label)}</strong>: ${d.all} → ${d.filtered} (${d.filtered<d.all?"up":"down"} ${Math.abs(d.filtered-d.all)} position${Math.abs(d.filtered-d.all)==1?"":"s"}).`).join(" "):"No cities change rank."}</p><div class="chart-scroll"><svg id="q3chart" role="img" aria-label="Slope chart comparing city rankings"></svg></div>${table(["City","All rows rank","Price-scoped rank"],all.map(d=>{const f=ranks.get(d.label);return[d.label,`${d.all} (${currency.format(d.mean)})`,`${f} (${currency.format(filtered.find(x=>x.label===d.label).mean)})`]}))}`)}
+function q4(rows){const areas=[...new Set(rows.map(r=>r.university))].sort(),data=areas.map(area=>{const vals=y=>rows.filter(r=>r.university===area&&priceOk(r)&&r.sale_date.startsWith(y)).map(r=>num(r.sale_price));const a=median(vals("2024")),b=median(vals("2025"));return{label:area,a,b,change:a&&b?(b-a)/a:null}}).filter(d=>d.a!==null&&d.b!==null).sort((x,y)=>y.change-x.change);const inc=a=>a[0],dec=a=>a.filter(d=>d.change<0);return panel(4,"What changed in median sale price from 2024 to 2025 by campus area?",`<p class="answer"><strong>${esc(inc(data).label)}</strong> had the largest increase: ${percent.format(inc(data).change)}. Decreases: ${dec.length?dec.map(d=>esc(d.label)).join(", "):"none"}.</p><div class="chart-scroll"><svg id="q4chart" role="img" aria-label="Campus median prices in 2024 and 2025"></svg></div>${table(["Campus area","2024 median","2025 median","Percent change"],data.map(d=>[d.label,currency.format(d.a),currency.format(d.b),percent.format(d.change)]))}`)}
+function q5(rows){const data=[...group(rows.filter(r=>r.list_date&&r.contract_date),r=>r.university,r=>(new Date(r.contract_date)-new Date(r.list_date))/86400000)].map(([label,v])=>({label,v:median(v),count:v.length})).sort((a,b)=>b.v-a.v);return panel(5,"What is the median days on market by campus area?",`<p class="answer"><strong>${esc(data[0].label)}</strong> is slowest at ${data[0].v.toFixed(1)} days; <strong>${esc(data[data.length-1].label)}</strong> is fastest at ${data[data.length-1].v.toFixed(1)} days.</p><div class="chart-scroll"><svg id="q5chart" role="img" aria-label="Median days on market by campus area"></svg></div>${table(["Campus area","Median days","Sales with both dates"],data.map(d=>[d.label,d.v.toFixed(1),integer.format(d.count)]))}`)}
+function q6(rows){const data=[...group(rows,r=>r.university,r=>{const p=num(r.sale_price),t=num(r.tax_annual_amount);return priceOk(r)&&t!==null&&t>0&&t<.1*p?{p,t}:null}).map(([label,v])=>{const a=v.filter(Boolean);return{label,p:a.reduce((x,d)=>x+d.p,0),t:a.reduce((x,d)=>x+d.t,0),count:a.length}}).filter(d=>d.count).map(d=>({...d,burden:d.t/d.p})).sort((a,b)=>b.burden-a.burden);return panel(6,"What is annual property tax as a percent of sale price?",`<p class="answer"><strong>${esc(data[0].label)}</strong> has the highest burden at ${percent.format(data[0].burden)}; <strong>${esc(data[data.length-1].label)}</strong> has the lowest at ${percent.format(data[data.length-1].burden)}.</p><div class="chart-scroll"><svg id="q6chart" role="img" aria-label="Tax burden by campus area"></svg></div>${table(["Campus area","Tax burden","Valid sales"],data.map(d=>[d.label,percent.format(d.burden),integer.format(d.count)]))}`)}
+function dynamicPanels(rows){const cities=[...new Set(rows.map(r=>r.city+", "+r.state))].sort(),areas=[...new Set(rows.map(r=>r.university))].sort(),years=[...new Set(rows.map(r=>r.sale_date.slice(0,4)).filter(Boolean))].sort();return panel(7,"For a selected bedroom count, which city has the lowest median price?",`<div class="controls">${input("beds","Exactly bedrooms",3,0)}</div><p id="q7answer" class="answer"></p><div class="chart-scroll"><svg id="q7chart" role="img"></svg></div><div id="q7table"></div>`)+panel(8,"For a selected price range, which city has the shortest median days on market?",`<div class="controls">${input("p8min","Minimum price",10000,0)}${input("p8max","Maximum price",500000,0)}</div><p id="q8answer" class="answer"></p><div class="chart-scroll"><svg id="q8chart" role="img"></svg></div><div id="q8table"></div>`)+panel(9,"For a selected city and year, how many sales occurred in each month?",`<div class="controls">${select("city9","City",cities)}${select("year9","Year",years)}</div><p id="q9answer" class="answer"></p><div class="chart-scroll"><svg id="q9chart" role="img"></svg></div>`)+panel(10,"For a selected campus area, budget, and minimum bedrooms, what is the median distance to campus?",`<div class="controls">${select("area10","Campus area",areas)}${input("budget10","Maximum budget",400000,0)}${input("beds10","Minimum bedrooms",3,0)}</div><p id="q10answer" class="answer"></p><div class="chart-scroll"><svg id="q10chart" role="img"></svg></div>`)}
+function renderQ3(items){const svg=document.querySelector("#q3chart"),w=920,left=220,right=100,top=20,row=32,h=items.length*row+25,x1=left+60,x2=w-right-30,parts=[];items.forEach((d,i)=>{const y=top+i*row,r=d.filtered,ry=top+(r-1)*row;parts.push(`<text class="city-label" x="${left-10}" y="${y+5}" text-anchor="end">${esc(d.label)}</text><line class="slope ${d.all!==d.filtered?"changed":""}" x1="${x1}" y1="${y}" x2="${x2}" y2="${ry}"><title>${esc(d.label)}: all rows ${d.all}, price-scoped ${d.filtered}</title></line><circle class="dot" cx="${x1}" cy="${y}" r="5"><title>All rows rank ${d.all}</title></circle><circle class="dot" cx="${x2}" cy="${ry}" r="5"><title>Price-scoped rank ${r}</title></circle>`)});parts.push(`<text class="axis-label" x="${x1}" y="12" text-anchor="middle">All rows</text><text class="axis-label" x="${x2}" y="12" text-anchor="middle">$10k–$5m</text>`);svg.setAttribute("viewBox",`0 0 ${w} ${h}`);svg.innerHTML=parts.join("")}
+function renderQ4(data){const svg=document.querySelector("#q4chart"),w=920,left=220,right=100,top=10,row=34,h=data.length*row+30,pw=w-left-right,max=Math.max(...data.flatMap(d=>[d.a,d.b])),parts=[];axis(parts,left,top,pw,h-30,max);data.forEach((d,i)=>{const y=top+i*row;parts.push(`<text class="city-label" x="${left-10}" y="${y+20}" text-anchor="end">${esc(d.label)}</text><rect class="bar" x="${left}" y="${y+4}" width="${pw*d.a/max}" height="9"><title>2024: ${currency.format(d.a)}</title></rect><rect class="bar alt" x="${left}" y="${y+16}" width="${pw*d.b/max}" height="9"><title>2025: ${currency.format(d.b)}</title></rect>`)});svg.setAttribute("viewBox",`0 0 ${w} ${h+25}`);svg.innerHTML=parts.join("")}
+function renderQ9(rows){const city=document.querySelector("#city9").value,year=document.querySelector("#year9").value,months=Array.from({length:12},(_,i)=>({label:new Date(2000,i,1).toLocaleString("en-US",{month:"short"}),v:0}));rows.filter(r=>r.city+", "+r.state===city&&r.sale_date.startsWith(year)).forEach(r=>{const m=num(r.sale_date.slice(5,7));if(m)months[m-1].v++});const best=Math.max(...months.map(d=>d.v));document.querySelector("#q9answer").innerHTML=`The busiest month is <strong>${months.find(d=>d.v===best).label}</strong> with <strong>${integer.format(best)} sales</strong>.`;const svg=document.querySelector("#q9chart"),w=920,left=60,right=35,top=15,h=260,pw=w-left-right,max=Math.max(best,1),parts=[];axis(parts,left,top,pw,h-55,max);months.forEach((d,i)=>{const x=left+pw*i/11,y=top+h-55-(h-55)*d.v/max;if(i)parts.push(`<line class="line" x1="${left+pw*(i-1)/11}" y1="${top+h-55-(h-55)*months[i-1].v/max}" x2="${x}" y2="${y}"/>`);parts.push(`<circle class="line-point" cx="${x}" cy="${y}" r="5"><title>${d.label}: ${d.v} sales</title></circle><text class="axis-label" x="${x}" y="${top+h-30}" text-anchor="middle">${d.label}</text><text class="value-label" x="${x}" y="${y-9}" text-anchor="middle">${d.v}</text>`)});svg.setAttribute("viewBox",`0 0 ${w} ${h}`);svg.innerHTML=parts.join("")}
+function updateDynamic(rows){const beds=num(document.querySelector("#beds").value)||0;const q7=[...group(rows.filter(r=>priceOk(r)&&num(r.beds)===beds),r=>r.city+", "+r.state,r=>num(r.sale_price)).entries()].map(([label,v])=>({label,v:median(v),count:v.length})).sort((a,b)=>a.v-b.v);document.querySelector("#q7answer").innerHTML=q7.length?`<strong>${esc(q7[0].label)}</strong> is lowest at <strong>${currency.format(q7[0].v)}</strong>.`:"No matching sales.";barChart("q7chart",q7,d=>d.v,0,currency);document.querySelector("#q7table").innerHTML=table(["City","Median price","Sales"],q7.map(d=>[d.label,currency.format(d.v),integer.format(d.count)]));
+const lo=num(document.querySelector("#p8min").value),hi=num(document.querySelector("#p8max").value),q8=[...group(rows.filter(r=>{const p=num(r.sale_price);return p!==null&&p>=Math.max(lo,PRICE_MIN)&&p<=Math.min(hi,PRICE_MAX)&&r.list_date&&r.contract_date}),r=>r.city+", "+r.state,r=>(new Date(r.contract_date)-new Date(r.list_date))/86400000)].map(([label,v])=>({label,v:median(v),count:v.length})).sort((a,b)=>a.v-b.v);document.querySelector("#q8answer").innerHTML=q8.length?`<strong>${esc(q8[0].label)}</strong> is shortest at <strong>${q8[0].v.toFixed(1)} days</strong>.`:"No matching sales.";barChart("q8chart",q8,d=>d.v,0,d=>`${d.toFixed(1)} days`);document.querySelector("#q8table").innerHTML=table(["City","Median days","Sales used"],q8.map(d=>[d.label,d.v.toFixed(1),integer.format(d.count)]));
+renderQ9(rows);const area=document.querySelector("#area10").value,budget=num(document.querySelector("#budget10").value),minbeds=num(document.querySelector("#beds10").value)||0,q10=rows.filter(r=>r.university===area&&priceOk(r)&&num(r.sale_price)<=Math.min(budget,PRICE_MAX)&&num(r.beds)>=minbeds).map(r=>num(r.miles_to_campus)).filter(v=>v!==null);document.querySelector("#q10answer").innerHTML=q10.length?`Median distance is <strong>${q10.length?median(q10).toFixed(1):"—"} miles</strong>, from <strong>${integer.format(q10.length)} sales</strong>.`:"No matching sales.";barChart("q10chart",[{label:"Median miles to campus",v:median(q10)||0}],d=>d.v,Math.max(median(q10)||1,1),d=>`${d.toFixed(1)} mi`)}
+async function load(){try{const res=await fetch("data/college_town_home_sales.csv");if(!res.ok)throw Error(`Dataset request failed (${res.status})`);const rows=parseCsv(await res.text());document.querySelector("#app").innerHTML=q1(rows)+q2(rows)+q3(rows)+q4(rows)+q5(rows)+q6(rows)+dynamicPanels(rows);const a1=[...group(rows.filter(priceOk),r=>r.city+", "+r.state,r=>num(r.sale_price))].map(([label,v])=>({label,v:median(v)})).sort((x,y)=>y.v-x.v);barChart("q1chart",a1,d=>d.v,0,currency);const a2=[...group(rows,r=>r.city+", "+r.state,r=>num(r.sale_price)).entries()].map(([label,v])=>({label,v:((mean(v)-median(v))/median(v))})).sort((a,b)=>b.v-a.v);barChart("q2chart",a2,d=>d.v,0,percent);const make=rs=>[...group(rs,r=>r.city+", "+r.state,r=>num(r.sale_price)).entries()].map(([label,v])=>({label,mean:mean(v)})).sort((a,b)=>b.mean-a.mean),all=make(rows),filtered=make(rows.filter(priceOk)),ranks=new Map(filtered.map((d,i)=>[d.label,i+1]));renderQ3(all.map((d,i)=>({label:d.label,all:i+1,filtered:ranks.get(d.label)})));const areas=[...new Set(rows.map(r=>r.university))].sort(),d4=areas.map(area=>{const f=y=>rows.filter(r=>r.university===area&&priceOk(r)&&r.sale_date.startsWith(y)).map(r=>num(r.sale_price));return{label:area,a:median(f("2024")),b:median(f("2025"))}}).filter(d=>d.a!==null&&d.b!==null);renderQ4(d4.sort((a,b)=>(b.b-b.a)/b.a-(a.b-a.a)/a.a));barChart("q5chart",[...group(rows.filter(r=>r.list_date&&r.contract_date),r=>r.university,r=>(new Date(r.contract_date)-new Date(r.list_date))/86400000)].map(([label,v])=>({label,v:median(v)})).sort((a,b)=>b.v-a.v),d=>d.v,0,d=>`${d.toFixed(1)} days`);const q6=[...group(rows,r=>r.university,r=>{const p=num(r.sale_price),t=num(r.tax_annual_amount);return priceOk(r)&&t>0&&t<.1*p?{p,t}:null}).map(([label,v])=>{const a=v.filter(Boolean);return{label,v:a.reduce((x,d)=>x+d.t,0)/a.reduce((x,d)=>x+d.p,0)}}).sort((a,b)=>b.v-a.v);barChart("q6chart",q6,d=>d.v,0,percent);document.querySelectorAll("input,select").forEach(el=>el.addEventListener("input",()=>updateDynamic(rows)));updateDynamic(rows)}catch(e){document.querySelector("#app").innerHTML=`<p class="status error">Unable to load the dataset: ${esc(e.message)}</p>`}}load();
+</script>
 </body>
 </html>
