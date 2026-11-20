@@ -76,6 +76,11 @@
     .metric span { color: var(--muted); font-size: .82rem; }
     .line-chart { fill: none; stroke: var(--accent); stroke-width: 3; }
     .month-dot { fill: var(--accent); }
+    .p1-note { max-width: 860px; margin: 0.75rem 0 1rem; }
+    .p1-visual { max-width: 860px; }
+    .p1-bar { fill: #8aa4ca; }
+    .p1-bar-highlight { fill: #bd4b4b; }
+    .p1-zero { fill: #f0a500; }
     @media (max-width: 640px) {
       .wrap { width: min(100% - 1rem, 1120px); }
       header { padding: 3rem 0 2.5rem; }
@@ -199,6 +204,31 @@
       </div>
       <p id="q10-answer" class="answer" role="status">Calculating…</p>
       <div class="chart-scroll"><svg id="q10-chart" role="img" aria-label="Q10 matching-sale distance chart"></svg></div>
+    </section>
+
+    <section class="panel" id="insights" aria-labelledby="insights-heading">
+      <h2 id="insights-heading">Insights</h2>
+      <section id="p1" aria-labelledby="p1-heading">
+        <h3 id="p1-heading">P1. Data Quality</h3>
+        <p id="p1-answer" class="answer" role="status">Calculating…</p>
+        <p class="subtle p1-note"><strong>Issue:</strong> Missing values in <code>list_date</code> or <code>contract_date</code> must not be interpreted as zero days. A blank date means the required date is unavailable.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Handling method</th><th>Records used</th><th>Mean days</th><th>Median days</th><th>Values recorded as zero</th></tr></thead>
+            <tbody id="p1-table"></tbody>
+          </table>
+        </div>
+        <p class="subtle p1-note">Missing-date rate by city (highest five).</p>
+        <div class="chart-scroll"><svg id="p1-chart" role="img" aria-label="P1 missing list or contract date rate by city"></svg></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>City</th><th>Records missing a list or contract date</th><th>City total</th><th>Missing-date rate</th></tr></thead>
+            <tbody id="p1-city-table"></tbody>
+          </table>
+        </div>
+        <p class="p1-note">Across the full dataset, 7,400 of 35,442 records (20.9%) lack at least one date needed to calculate days on market. Treating each blank as zero produced a mean of 26.86 days and a median of 6.0 days, while incorrectly assigning zero to 7,784 records. After excluding incomplete records and calculating <code>contract_date − list_date</code> only where both dates exist, 28,042 records (79.1%) remain. The cleaned mean is 33.95 days and the median is 11.0 days; only 384 listed and contracted same-day sales remain at zero. Thus, improper zero substitution understates the median by 5.0 days and makes the distribution appear much faster than it is.</p>
+        <p class="p1-note">The missing dates are not distributed randomly. Pittsboro has the highest missing-date rate in the table at 38.0%, followed by Iowa City at 34.6%, State College at 32.8%, Carrboro at 28.4%, and Charlottesville at 25.9%. This missingness matters because a city-level days-on-market statistic describes only sales with observable timing. Excluding incomplete records is therefore transparent and necessary, although it may omit homes sold off-market or through new-construction transactions. A conclusion should state this eligible-record limitation rather than treating unavailable dates as instant sales.</p>
+      </section>
     </section>
   </main>
 
@@ -655,6 +685,77 @@
         document.querySelector("#q10-budget").addEventListener("input", updateQ10);
         document.querySelector("#q10-beds").addEventListener("input", updateQ10);
         updateQ10();
+
+        // P1. Data quality: missing list/contract dates
+        const p1Before = [];
+        const p1Clean = [];
+        const p1CityCounts = new Map();
+        allRows.forEach((row) => {
+          const city = cityKey(row);
+          const listDate = row.list_date && row.list_date.trim();
+          const contractDate = row.contract_date && row.contract_date.trim();
+          if (!p1CityCounts.has(city)) p1CityCounts.set(city, { total: 0, missing: 0 });
+          const cityCount = p1CityCounts.get(city);
+          cityCount.total++;
+          if (listDate && contractDate) {
+            const days = (Date.parse(contractDate) - Date.parse(listDate)) / 86400000;
+            if (Number.isFinite(days)) {
+              p1Before.push(days);
+              p1Clean.push(days);
+            } else {
+              p1Before.push(0);
+              cityCount.missing++;
+            }
+          } else {
+            p1Before.push(0);
+            cityCount.missing++;
+          }
+        });
+        const p1MissingRecords = p1Before.length - p1Clean.length;
+        const p1BeforeMean = mean(p1Before);
+        const p1BeforeMedian = median(p1Before);
+        const p1CleanMean = mean(p1Clean);
+        const p1CleanMedian = median(p1Clean);
+        const p1BeforeZeros = p1Before.filter((days) => days === 0).length;
+        const p1CleanZeros = p1Clean.filter((days) => days === 0).length;
+
+        document.querySelector("#p1-answer").innerHTML = `<strong>Impact:</strong> Excluding incomplete dates raises the median from ${decimal.format(p1BeforeMedian)} to ${decimal.format(p1CleanMedian)} days; the 7,400 incomplete records are omitted rather than treated as zero.`;
+        document.querySelector("#p1-table").innerHTML = [
+          `<tr><td>Missing dates treated as zero</td><td>${integer.format(p1Before.length)}</td><td>${decimal.format(p1BeforeMean)}</td><td>${decimal.format(p1BeforeMedian)}</td><td>${integer.format(p1BeforeZeros)}</td></tr>`,
+          `<tr><td>Both dates required</td><td>${integer.format(p1Clean.length)}</td><td>${decimal.format(p1CleanMean)}</td><td>${decimal.format(p1CleanMedian)}</td><td>${integer.format(p1CleanZeros)}</td></tr>`
+        ].join("");
+
+        const p1Cities = [...p1CityCounts.entries()].map(([name, counts]) => ({
+          name,
+          missing: counts.missing,
+          total: counts.total,
+          rate: counts.missing / counts.total * 100
+        })).sort((a, b) => b.rate - a.rate || a.name.localeCompare(b.name)).slice(0, 5);
+        document.querySelector("#p1-city-table").innerHTML = p1Cities.map((item) =>
+          `<tr><td>${item.name}</td><td>${integer.format(item.missing)}</td><td>${integer.format(item.total)}</td><td>${item.rate.toFixed(1)}%</td></tr>`
+        ).join("");
+
+        const p1Svg = document.querySelector("#p1-chart");
+        const p1Width = 860, p1Left = 170, p1Right = 55, p1Top = 25, p1Bottom = 55;
+        const p1Height = 300, p1PlotWidth = p1Width - p1Left - p1Right;
+        const p1Max = Math.max(40, ...p1Cities.map((item) => item.rate));
+        p1Svg.setAttribute("viewBox", `0 0 ${p1Width} ${p1Height}`);
+        const p1Parts = [];
+        for (let i = 0; i <= 4; i++) {
+          const y = p1Top + (p1Height - p1Top - p1Bottom) * i / 4;
+          p1Parts.push(`<line class="gridline" x1="${p1Left}" y1="${y}" x2="${p1Width - p1Right}" y2="${y}"></line>`);
+          p1Parts.push(`<text class="axis-label" x="${p1Left - 8}" y="${y + 4}" text-anchor="end">${(p1Max * (4 - i) / 4).toFixed(0)}%</text>`);
+        }
+        p1Cities.forEach((item, i) => {
+          const band = (p1Height - p1Top - p1Bottom) / p1Cities.length;
+          const barHeight = 28;
+          const y = p1Top + i * band + (band - barHeight) / 2;
+          const width = p1PlotWidth * item.rate / p1Max;
+          p1Parts.push(`<text class="label" x="${p1Left - 12}" y="${y + 19}" text-anchor="end">${item.name}</text>`);
+          p1Parts.push(`<rect class="${i === 0 ? "p1-bar-highlight" : "p1-bar"}" x="${p1Left}" y="${y}" width="${width}" height="${barHeight}" rx="4"><title>${item.name}: ${item.missing} of ${item.total} records missing a date (${item.rate.toFixed(1)}%)</title></rect>`);
+          p1Parts.push(`<text class="value-label" x="${p1Left + width + 8}" y="${y + 19}">${item.rate.toFixed(1)}%</text>`);
+        });
+        p1Svg.innerHTML = p1Parts.join("");
 
         statusTargets.forEach((target) => { if (target.classList.contains("error")) target.classList.remove("error"); });
       } catch (error) {
