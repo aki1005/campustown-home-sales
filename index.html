@@ -43,6 +43,16 @@
     .label { fill: var(--ink); font-size: 12px; font-weight: 600; }
     .bar { fill: var(--accent); }
     .bar:hover { fill: var(--accent-dark); }
+    .highlight-bar { fill: #f0a500; }
+    .gap-bar { fill: #8aa4ca; }
+    .gap-highlight { fill: #bd4b4b; }
+    .dumbbell-line { stroke: #9aa7ba; stroke-width: 3; }
+    .dumbbell-all { fill: #8aa4ca; }
+    .dumbbell-valid { fill: #2864c7; }
+    .dumbbell-changed { fill: #f0a500; }
+    .slowest-dot { fill: #bd4b4b; }
+    .fastest-dot { fill: #16835a; }
+    .normal-dot { fill: #2864c7; }
     .good { fill: var(--good); }
     .bad { fill: var(--bad); }
     .slope-2024 { stroke: #8aa4ca; }
@@ -87,10 +97,12 @@
   <main class="wrap">
     <section class="intro" aria-label="Filtering rule">
       <strong>How to read these numbers:</strong>
-      Q1–Q5 use every sale in the dataset whose sale price is from
-      <strong>$10,000 through $5,000,000, inclusive</strong>. Each listing is counted once using
-      <strong>listing_id</strong>; repeated street addresses are not deduplicated.
-      Days on market are <strong>contract_date minus list_date</strong>, and only rows with both dates are used.
+      Q1 uses valid sale prices from <strong>$10,000 through $5,000,000, inclusive</strong>.
+      Q2 uses <strong>all rows with no price filter</strong>. Q3 compares ranks calculated from all rows
+      against ranks calculated from valid-price rows. Q4 uses valid sale prices. Q5 uses valid sale
+      prices and only rows with both <strong>list_date</strong> and <strong>contract_date</strong>;
+      days on market is <strong>contract_date minus list_date</strong>. Each listing is counted once
+      using <strong>listing_id</strong>; repeated street addresses are not deduplicated.
     </section>
 
     <section class="panel" id="q1">
@@ -105,12 +117,15 @@
       <h2>Q2. Mean-vs-median gap by city</h2>
       <p id="q2-answer" class="answer" role="status">Calculating…</p>
       <p class="subtle">Q2 uses all rows, as specified, even implausible prices.</p>
+      <div class="chart-scroll"><svg id="q2-chart" role="img" aria-label="Q2 mean-versus-median percentage gap by city"></svg></div>
       <div class="table-wrap"><table><thead><tr><th>City</th><th>Mean sale price</th><th>Median sale price</th><th>Gap</th></tr></thead><tbody id="q2-table"></tbody></table></div>
     </section>
 
     <section class="panel" id="q3">
       <h2>Q3. City mean-price ranks: all rows vs. valid prices</h2>
       <p id="q3-answer" class="answer" role="status">Calculating…</p>
+      <p class="subtle">Dumbbell chart: rank 1 is the highest mean sale price.</p>
+      <div class="chart-scroll"><svg id="q3-chart" role="img" aria-label="Q3 mean-price rank comparison by city"></svg></div>
       <div class="table-wrap"><table><thead><tr><th>City</th><th>All-row mean</th><th>All-row rank</th><th>Valid-price mean</th><th>Valid-price rank</th><th>Change</th></tr></thead><tbody id="q3-table"></tbody></table></div>
     </section>
 
@@ -240,24 +255,59 @@
       return items.filter((item) => valueFn(item) === min).map((item) => item.name || item.key);
     }
 
-    function renderHorizontalBars(svgId, items, valueFn, labelFn, formatter) {
+    function renderHorizontalBars(svgId, items, valueFn, labelFn, formatter, options = {}) {
       const svg = document.querySelector(svgId);
       const width = 900, left = 170, right = 110, top = 18, rowHeight = 34;
-      const height = top + items.length * rowHeight + 30, plotWidth = width - left - right;
+      const height = top + items.length * rowHeight + 55, plotWidth = width - left - right;
       const max = Math.max(...items.map(valueFn)) * 1.08;
       svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-      const parts = [];
+      const parts = [
+        `<text class="label" x="${width / 2}" y="12" text-anchor="middle" font-size="14">${options.title || ""}</text>`
+      ];
       for (let i = 0; i <= 5; i++) {
         const x = left + plotWidth * i / 5;
-        parts.push(`<line class="gridline" x1="${x}" y1="${top - 4}" x2="${x}" y2="${height - 24}"></line>`);
-        parts.push(`<text class="axis-label" x="${x}" y="${height - 6}" text-anchor="middle">${formatter(max * i / 5)}</text>`);
+        parts.push(`<line class="gridline" x1="${x}" y1="${top + 12}" x2="${x}" y2="${height - 38}"></line>`);
+        parts.push(`<text class="axis-label" x="${x}" y="${height - 20}" text-anchor="middle">${formatter(max * i / 5)}</text>`);
       }
+      if (options.axisLabel) parts.push(`<text class="axis-label" x="${left + plotWidth / 2}" y="${height - 3}" text-anchor="middle">${options.axisLabel}</text>`);
       items.forEach((item, i) => {
         const y = top + i * rowHeight;
         const widthPx = plotWidth * valueFn(item) / max;
-        parts.push(`<text class="label" x="${left - 12}" y="${y + 17}" text-anchor="end">${labelFn(item)}</text>`);
-        parts.push(`<rect class="bar" x="${left}" y="${y + 4}" width="${widthPx}" height="22" rx="5"><title>${labelFn(item)}: ${formatter(valueFn(item))}</title></rect>`);
-        parts.push(`<text class="value-label" x="${left + widthPx + 8}" y="${y + 19}">${formatter(valueFn(item))}</text>`);
+        const highlight = options.highlight && options.highlight(item);
+        parts.push(`<text class="label" x="${left - 12}" y="${y + 31}" text-anchor="end">${labelFn(item)}</text>`);
+        parts.push(`<rect class="${highlight ? (options.highlightClass || "highlight-bar") : (options.normalClass || "bar")}" x="${left}" y="${y + 18}" width="${widthPx}" height="22" rx="5"><title>${labelFn(item)}: ${formatter(valueFn(item))}</title></rect>`);
+        parts.push(`<text class="value-label" x="${left + widthPx + 8}" y="${y + 33}">${formatter(valueFn(item))}</text>`);
+      });
+      svg.innerHTML = parts.join("");
+    }
+
+    function renderDumbbellChart(items) {
+      const svg = document.querySelector("#q3-chart");
+      const width = 900, left = 170, right = 90, top = 48, rowHeight = 34;
+      const height = top + items.length * rowHeight + 45, plotWidth = width - left - right;
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      const rankX = (rank) => left + plotWidth * (rank - 1) / 17;
+      const parts = [
+        `<text class="label" x="${width / 2}" y="18" text-anchor="middle" font-size="14">Mean-price rank: all rows vs. valid prices</text>`,
+        `<text class="axis-label" x="${left + plotWidth / 2}" y="${height - 5}" text-anchor="middle">Mean-price rank (1 = highest mean)</text>`
+      ];
+      for (let rank = 1; rank <= 18; rank += 2) {
+        const x = rankX(rank);
+        parts.push(`<line class="gridline" x1="${x}" y1="${top - 10}" x2="${x}" y2="${height - 28}"></line>`);
+        parts.push(`<text class="axis-label" x="${x}" y="${height - 15}" text-anchor="middle">${rank}</text>`);
+      }
+      parts.push(`<circle class="dumbbell-all" cx="${left}" cy="${top - 22}" r="6"></circle><text class="axis-label" x="${left + 10}" y="${top - 18}">All rows</text>`);
+      parts.push(`<circle class="dumbbell-valid" cx="${left + 78}" cy="${top - 22}" r="6"></circle><text class="axis-label" x="${left + 88}" y="${top - 18}">Valid prices</text>`);
+      parts.push(`<circle class="dumbbell-changed" cx="${left + 175}" cy="${top - 22}" r="6"></circle><text class="axis-label" x="${left + 185}" y="${top - 18}">Rank changed</text>`);
+      items.forEach((item, i) => {
+        const y = top + i * rowHeight;
+        const changed = item.allRank !== item.validRank;
+        const x1 = rankX(item.allRank), x2 = rankX(item.validRank);
+        parts.push(`<text class="label" x="${left - 12}" y="${y + 5}" text-anchor="end">${item.name}</text>`);
+        parts.push(`<line class="dumbbell-line" x1="${x1}" y1="${y}" x2="${x2}" y2="${y}"><title>${item.name}: all rows rank ${item.allRank}; valid prices rank ${item.validRank}</title></line>`);
+        parts.push(`<circle class="${changed ? "dumbbell-changed" : "dumbbell-all"}" cx="${x1}" cy="${y}" r="7"><title>${item.name}, all rows: rank ${item.allRank}, mean ${currency.format(item.allMean)}</title></circle>`);
+        parts.push(`<circle class="${changed ? "dumbbell-changed" : "dumbbell-valid"}" cx="${x2}" cy="${y}" r="7"><title>${item.name}, valid prices: rank ${item.validRank}, mean ${currency.format(item.validMean)}</title></circle>`);
+        parts.push(`<text class="value-label" x="${Math.max(x1, x2) + 10}" y="${y + 4}">${item.allRank}→${item.validRank}</text>`);
       });
       svg.innerHTML = parts.join("");
     }
@@ -270,7 +320,9 @@
       const xScale = (value) => top + (bottom - top) * (value - min) / (max - min);
       svg.setAttribute("viewBox", `0 0 ${width} ${bottom + 50}`);
       const sorted = [...items].sort((a, b) => b.change - a.change);
+      const largest = sorted[0];
       const parts = [
+        `<text class="label" x="${width / 2}" y="16" text-anchor="middle" font-size="14">Campus-area median sale prices, 2024–2025</text>`,
         `<text class="label" x="${left}" y="20" text-anchor="middle">2024</text>`,
         `<text class="label" x="${right}" y="20" text-anchor="middle">2025</text>`
       ];
@@ -279,9 +331,10 @@
         const y = 55 + i * 38;
         const y1 = xScale(item.median2024), y2 = xScale(item.median2025);
         parts.push(`<text class="label" x="${left - 12}" y="${y + 4}" text-anchor="end">${item.name}</text>`);
-        parts.push(`<line x1="${left}" y1="${y1}" x2="${right}" y2="${y2}" stroke="${item.change >= 0 ? "#16835a" : "#bd4b4b"}" stroke-width="2"></line>`);
-        parts.push(`<circle cx="${left}" cy="${y1}" r="5" fill="#8aa4ca"><title>2024 ${item.name}: ${currency.format(item.median2024)}</title></circle>`);
-        parts.push(`<circle cx="${right}" cy="${y2}" r="5" fill="#2864c7"><title>2025 ${item.name}: ${currency.format(item.median2025)}; ${decimal.format(item.change)}%</title></circle>`);
+        const lineColor = item.name === largest.name ? "#f0a500" : (item.change < 0 ? "#bd4b4b" : "#16835a");
+        parts.push(`<line x1="${left}" y1="${y1}" x2="${right}" y2="${y2}" stroke="${lineColor}" stroke-width="3"><title>${item.name}: ${currency.format(item.median2024)} to ${currency.format(item.median2025)} (${item.change >= 0 ? "+" : ""}${decimal.format(item.change)}%)</title></line>`);
+        parts.push(`<circle cx="${left}" cy="${y1}" r="${item.name === largest.name || item.change < 0 ? 7 : 5}" fill="#8aa4ca"><title>2024 ${item.name}: ${currency.format(item.median2024)}</title></circle>`);
+        parts.push(`<circle cx="${right}" cy="${y2}" r="${item.name === largest.name || item.change < 0 ? 7 : 5}" fill="${lineColor}"><title>2025 ${item.name}: ${currency.format(item.median2025)}; ${item.change >= 0 ? "+" : ""}${decimal.format(item.change)}%</title></circle>`);
         parts.push(`<text class="value-label" x="${left + 10}" y="${y1 - 7}">${currency.format(item.median2024)}</text>`);
         parts.push(`<text class="value-label" x="${right + 10}" y="${y2 - 7}">${currency.format(item.median2025)} (${item.change >= 0 ? "+" : ""}${decimal.format(item.change)}%)</text>`);
       });
@@ -293,18 +346,24 @@
       const width = 900, left = 260, right = 90, top = 20, rowHeight = 38;
       const height = top + items.length * rowHeight + 35, plotWidth = width - left - right;
       const max = Math.max(...items.map((item) => item.median)) * 1.08;
+      const slowest = Math.max(...items.map((item) => item.median));
+      const fastest = Math.min(...items.map((item) => item.median));
       svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-      const parts = [];
+      const parts = [
+        `<text class="label" x="${width / 2}" y="12" text-anchor="middle" font-size="14">Median days on market by campus area</text>`,
+        `<text class="axis-label" x="${left + plotWidth / 2}" y="${height - 2}" text-anchor="middle">Median days from listing to contract</text>`
+      ];
       for (let i = 0; i <= 5; i++) {
         const x = left + plotWidth * i / 5;
-        parts.push(`<line class="gridline" x1="${x}" y1="${top - 4}" x2="${x}" y2="${height - 25}"></line>`);
-        parts.push(`<text class="axis-label" x="${x}" y="${height - 7}" text-anchor="middle">${decimal.format(max * i / 5)} days</text>`);
+        parts.push(`<line class="gridline" x1="${x}" y1="${top + 12}" x2="${x}" y2="${height - 38}"></line>`);
+        parts.push(`<text class="axis-label" x="${x}" y="${height - 20}" text-anchor="middle">${decimal.format(max * i / 5)} days</text>`);
       }
       items.forEach((item, i) => {
         const y = top + i * rowHeight;
         const x = left + plotWidth * item.median / max;
+        const dotClass = item.median === slowest ? "slowest-dot" : (item.median === fastest ? "fastest-dot" : "normal-dot");
         parts.push(`<text class="label" x="${left - 12}" y="${y + 17}" text-anchor="end">${item.name}</text>`);
-        parts.push(`<circle cx="${x}" cy="${y + 12}" r="8" fill="#2864c7"><title>${item.name}: ${decimal.format(item.median)} days; ${integer.format(item.count)} sales</title></circle>`);
+        parts.push(`<circle class="${dotClass}" cx="${x}" cy="${y + 12}" r="${item.median === slowest || item.median === fastest ? 10 : 8}"><title>${item.name}: ${decimal.format(item.median)} days; ${integer.format(item.count)} sales</title></circle>`);
         parts.push(`<text class="value-label" x="${x + 12}" y="${y + 16}">${decimal.format(item.median)} days</text>`);
       });
       svg.innerHTML = parts.join("");
@@ -377,7 +436,12 @@
         const q1Highest = maxTie(q1Items, (item) => item.median);
         document.querySelector("#q1-answer").innerHTML = `<strong>Highest median:</strong> ${q1Highest.join("; ")} at ${currency.format(Math.max(...q1Items.map((item) => item.median)))}.`;
         document.querySelector("#q1-table").innerHTML = q1Items.map((item) => `<tr><td>${item.name}</td><td>${currency.format(item.median)}</td></tr>`).join("");
-        renderHorizontalBars("#q1-chart", q1Items, (item) => item.median, (item) => item.name, (value) => currency.format(value));
+        renderHorizontalBars("#q1-chart", q1Items, (item) => item.median, (item) => item.name, (value) => currency.format(value), {
+          title: "Median sale price by city (highest to lowest)",
+          axisLabel: "Median sale price",
+          highlight: (item) => item.name === "Davis, CA",
+          highlightClass: "highlight-bar"
+        });
 
         // Q2
         const q2Items = [...group(allRows, cityKey).entries()].map(([name, rows]) => {
@@ -388,6 +452,13 @@
         const q2Largest = q2Items[0];
         document.querySelector("#q2-answer").innerHTML = `<strong>Largest gap:</strong> ${q2Largest.name}, with mean ${currency.format(q2Largest.mean)}, median ${currency.format(q2Largest.median)}, and a gap of ${decimal.format(q2Largest.gap)}%. Extreme high sale prices raise the mean relative to the median.`;
         document.querySelector("#q2-table").innerHTML = q2Items.map((item) => `<tr><td>${item.name}</td><td>${currency.format(item.mean)}</td><td>${currency.format(item.median)}</td><td>${decimal.format(item.gap)}%</td></tr>`).join("");
+        renderHorizontalBars("#q2-chart", q2Items, (item) => item.gap, (item) => item.name, (value) => `${decimal.format(value)}%`, {
+          title: "Mean-versus-median percentage gap (all rows)",
+          axisLabel: "Percentage gap: (mean − median) / median",
+          highlight: (item) => item.name === "Athens, GA",
+          highlightClass: "gap-highlight",
+          normalClass: "gap-bar"
+        });
 
         // Q3
         const allMeanItems = [...group(allRows, cityKey).entries()].map(([name, rows]) => ({ name, mean: mean(rows.map((row) => Number(row.sale_price))) }));
@@ -407,6 +478,7 @@
         document.querySelector("#q3-table").innerHTML = [...q3Items].sort((a, b) => a.allRank - b.allRank).map((item) =>
           `<tr><td>${item.name}</td><td>${currency.format(item.allMean)}</td><td>${item.allRank}</td><td>${currency.format(item.validMean)}</td><td>${item.validRank}</td><td>${item.change === 0 ? "0" : (item.change > 0 ? "+" : "") + item.change}</td></tr>`
         ).join("");
+        renderDumbbellChart(q3Items);
 
         // Q4
         const campusGroups = group(validRows, (row) => row.university);
