@@ -23,3 +23,9 @@ Copy this outline for each entry:
 - **Asked:** "Implement the plan: 将现有首页扩展为包含 Q1 至 Q5 的完整分析页面……"
 - **Agent produced:** Replaced the existing page with five independent Q1–Q5 sections. Added dynamic CSV loading, valid-price filtering, all-row calculations for Q2–Q3, 2024–2025 campus median comparisons, and date-based days-on-market medians. Added horizontal bar, diverging bar, and slope charts, plus written answers and data tables.
 - **Checked or changed:** Read `docs/data_description_sheet.md` before coding and kept `listing_id` as the row key. Verified the inline JavaScript parses without syntax errors and independently calculated Q2 and Q3 in Python. The independent check found that Athens, GA, Madison, WI, and State College, PA are the only cities with ranking changes. No original dataset file was modified.
+
+## 2026-11-20: Implementing Q6-Q10
+
+- **Asked:** "我现在已经打开了一新的窗口修改Q1-5 你先搞Q6-10"
+- **Agent produced:** Added Q6-Q10 sections and dynamic controls to the existing page. Added Q6 campus tax-burden totals, Q7 exact-bedroom city medians, Q8 price-range days-on-market medians, Q9 city-and-year monthly counts, and Q10 campus-budget-bedroom distance counts and medians. Added bar, line, and summary chart elements for the new sections.
+- **Checked or changed:** Independently calculated sample Q6-Q10 results in Python and tested Q7 with 3 bedrooms, Q9 with Davis and 2025, and Q10 with Urbana-Champaign, a $400,000 budget, and 3 bedrooms in the browser. Browser results matched the independent calculations. JavaScript syntax and secret scanning passed, and no dataset file was modified.
