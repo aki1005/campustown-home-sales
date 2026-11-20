@@ -103,6 +103,11 @@
       prices and only rows with both <strong>list_date</strong> and <strong>contract_date</strong>;
       days on market is <strong>contract_date minus list_date</strong>. Each listing is counted once
       using <strong>listing_id</strong>; repeated street addresses are not deduplicated.
+      Q6 uses valid-price rows with positive annual tax below 10% of sale price. Q7 uses valid-price
+      rows and matches an exact bedroom count. Q8 uses valid-price rows within the chosen inclusive
+      price range and requires both listing and contract dates. Q9 counts sales by closing month for
+      the chosen city and year. Q10 uses valid-price rows, the chosen campus, a maximum budget, and
+      a minimum bedroom count; missing bedroom values do not meet the minimum.
     </section>
 
     <section class="panel" id="q1">
@@ -598,10 +603,17 @@
             };
           });
           const maxCount = Math.max(...counts.map((item) => item.count));
-          const peakMonths = counts.filter((item) => item.count === maxCount).map((item) => item.name);
-          document.querySelector("#q9-answer").innerHTML = `<strong>Peak month${peakMonths.length > 1 ? "s" : ""}:</strong> ${peakMonths.join("; ")}, with ${integer.format(maxCount)} sales in ${city} for ${year}.`;
+          const svg = document.querySelector("#q9-chart");
+          if (maxCount === 0) {
+            document.querySelector("#q9-answer").innerHTML = `<strong>无销售：</strong>${city} 在 ${year} 年没有销售记录。`;
+            svg.innerHTML = "";
+            svg.removeAttribute("viewBox");
+          } else {
+            const peakMonths = counts.filter((item) => item.count === maxCount).map((item) => item.name);
+            document.querySelector("#q9-answer").innerHTML = `<strong>Peak month${peakMonths.length > 1 ? "s" : ""}:</strong> ${peakMonths.join("; ")}, with ${integer.format(maxCount)} sales in ${city} for ${year}.`;
+          }
           document.querySelector("#q9-table").innerHTML = counts.map((item) => `<tr><td>${item.name}</td><td>${integer.format(item.count)}</td></tr>`).join("");
-          renderLineChart("#q9-chart", counts);
+          if (maxCount > 0) renderLineChart("#q9-chart", counts);
         }
         q9City.addEventListener("change", updateQ9);
         q9Year.addEventListener("change", updateQ9);
