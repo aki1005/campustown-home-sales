@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,127 +11,118 @@
       --ink: #17233c;
       --muted: #5e6b82;
       --line: #dce3ee;
-      --panel: #ffffff;
       --page: #f4f7fb;
       --accent: #2864c7;
       --accent-dark: #174b9d;
       --accent-soft: #dbe9ff;
+      --up: #23855a;
+      --down: #b44c4c;
     }
-
     * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--page);
-      color: var(--ink);
-      font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
+    body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
     .wrap { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
-
-    header {
-      padding: 4.5rem 0 3.25rem;
-      background: linear-gradient(135deg, #102d62, #2864c7);
-      color: #fff;
-    }
-    header .subtle { color: #b9d1ff; }
-
-    h1, h2, p { margin-top: 0; }
-    h1 { max-width: 760px; margin-bottom: 1rem; font-size: clamp(2.2rem, 6vw, 4.4rem); line-height: 1.04; letter-spacing: -0.04em; }
-    header p { max-width: 680px; margin-bottom: 0; color: #dfeaff; font-size: 1.1rem; }
-
+    header { padding: 4rem 0 3rem; background: linear-gradient(135deg, #102d62, #2864c7); color: #fff; }
+    header p { color: #dfeaff; }
+    h1 { max-width: 760px; margin: 0 0 1rem; font-size: clamp(2.2rem, 6vw, 4.4rem); line-height: 1.04; letter-spacing: -.04em; }
+    h2 { margin: 0 0 .35rem; font-size: 1.35rem; }
+    h3 { margin: 1.25rem 0 .5rem; font-size: 1.05rem; }
+    p { margin-top: 0; }
     main { padding: 2rem 0 4rem; }
-    .intro, .panel {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--panel);
-      box-shadow: 0 10px 30px rgb(23 35 60 / 6%);
-    }
+    .intro, .panel { border: 1px solid var(--line); border-radius: 18px; background: #fff; box-shadow: 0 10px 30px rgb(23 35 60 / 6%); }
     .intro { padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
-    .intro strong { color: var(--accent-dark); }
     .panel { padding: 1.5rem; margin-bottom: 1.5rem; }
-    h2 { margin-bottom: .35rem; font-size: 1.35rem; }
     .subtle, .status { color: var(--muted); }
     .status { min-height: 1.5em; margin: .75rem 0 0; }
-
+    .answer { padding: .9rem 1rem; margin: 1rem 0; border-left: 4px solid var(--accent); background: #f3f7fd; }
     .chart-scroll { overflow-x: auto; padding-bottom: .25rem; }
     svg { display: block; min-width: 720px; width: 100%; height: auto; }
-    .bar { fill: var(--accent); }
-    .bar:hover { fill: var(--accent-dark); }
-    .axis-label, .value-label { fill: var(--muted); font-size: 12px; }
-    .city-label { fill: var(--ink); font-size: 13px; font-weight: 600; }
     .gridline { stroke: var(--line); stroke-width: 1; }
-
+    .axis-label, .value-label { fill: var(--muted); font-size: 12px; }
+    .city-label { fill: var(--ink); font-size: 12px; font-weight: 600; }
+    .bar { fill: var(--accent); }
+    .bar-up { fill: var(--up); }
+    .bar-down { fill: var(--down); }
+    .zero-line { stroke: #7d899e; stroke-width: 1.5; }
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
-    th, td { padding: .8rem .65rem; border-bottom: 1px solid var(--line); text-align: left; }
+    th, td { padding: .75rem .65rem; border-bottom: 1px solid var(--line); text-align: left; }
     th { color: var(--muted); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
-    td:nth-child(2), td:nth-child(3), th:nth-child(2), th:nth-child(3) { text-align: right; white-space: nowrap; }
+    td.num, th.num { text-align: right; white-space: nowrap; }
     tbody tr:last-child td { border-bottom: 0; }
-
+    .up { color: var(--up); font-weight: 700; }
+    .down { color: var(--down); font-weight: 700; }
     footer { padding: 0 0 2.5rem; color: var(--muted); font-size: .9rem; }
     footer a { color: var(--accent-dark); }
     .error { color: #a52b2b; }
-
     @media (max-width: 640px) {
       .wrap { width: min(100% - 1rem, 1120px); }
       header { padding: 3rem 0 2.5rem; }
       main { padding-top: 1rem; }
       .panel { padding: 1rem; border-radius: 14px; }
-      th, td { padding: .7rem .45rem; }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
-      <p class="subtle">A data view of 35,442 completed sales around college towns</p>
+      <p>College-Town Home Sales Dataset · 35,442 completed sales</p>
       <h1>College-Town Home Sales Explorer</h1>
-      <p>Compare the typical sale price and volume of homes sold across the cities in this dataset.</p>
+      <p>Q1–Q5：城市价格、异常值影响、排名变化和校园区域趋势。</p>
     </div>
   </header>
 
   <main class="wrap">
-    <section class="intro" aria-label="Filtering rule">
-      <strong>How to read these numbers:</strong>
-      Every count and price statistic on this page uses each row as one sale, without deduplicating
-      street addresses. We include sale prices from <strong>$10,000 through $5,000,000</strong>,
-      inclusive, to leave out the implausible low and high values described in the data notes.
+    <section class="intro">
+      <strong>统一分析规则：</strong>
+      除 Q2 和 Q3 的“全部行”排名外，价格统计只使用有效价格（$10,000 至 $5,000,000，含端点）。
+      同一街道地址出现多次时仍各自计为一笔销售，使用 <code>listing_id</code> 不去重。
+      中位数默认用于每题；缺少日期的行不参与天数计算。
+    </section>
+    <p id="load-status" class="status" role="status">正在加载数据集……</p>
+
+    <section class="panel" id="q1">
+      <h2>Q1. 哪个城市的中位销售价最高？</h2>
+      <p class="subtle">有效价格范围内，每个 city + state 的中位销售价。</p>
+      <div class="answer" id="q1-answer">计算中……</div>
+      <div class="chart-scroll"><svg id="q1-chart" role="img" aria-label="Q1 城市中位销售价横向柱状图"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>城市</th><th class="num">销售数</th><th class="num">中位销售价</th></tr></thead><tbody id="q1-table"></tbody></table></div>
     </section>
 
-    <section class="panel">
-      <h2>Median sale price by city and state</h2>
-      <p class="subtle">Bars are ordered from highest to lowest median. Hover or focus a bar for its exact value.</p>
-      <div class="chart-scroll">
-        <svg id="chart" role="img" aria-labelledby="chart-title chart-description">
-          <title id="chart-title">Median sale price by city and state</title>
-          <desc id="chart-description">A horizontal bar chart populated from the home sales CSV.</desc>
-        </svg>
-      </div>
-      <p id="chart-status" class="status" role="status">Loading the dataset…</p>
+    <section class="panel" id="q2">
+      <h2>Q2. 哪个城市的平均价相对中位价差距最大？</h2>
+      <p class="subtle">使用全部行，不应用有效价格范围。差距 = (平均价 − 中位价) ÷ 中位价。</p>
+      <div class="answer" id="q2-answer">计算中……</div>
+      <div class="chart-scroll"><svg id="q2-chart" role="img" aria-label="Q2 每个城市的均值与中位价差距"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>城市</th><th class="num">平均销售价</th><th class="num">中位销售价</th><th class="num">差距</th></tr></thead><tbody id="q2-table"></tbody></table></div>
     </section>
 
-    <section class="panel">
-      <h2>Eligible sales by city and state</h2>
-      <p class="subtle">Eligible sale count and median sale price after applying the stated price filter.</p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th scope="col">City and state</th><th scope="col">Eligible sales</th><th scope="col">Median sale price</th></tr>
-          </thead>
-          <tbody id="results"></tbody>
-        </table>
-      </div>
+    <section class="panel" id="q3">
+      <h2>Q3. 过滤前后城市平均售价排名如何变化？</h2>
+      <p class="subtle">排名按平均销售价从高到低；并列时共同排名。全部行与有效价格范围分别排名。</p>
+      <div class="answer" id="q3-answer">计算中……</div>
+      <div class="chart-scroll"><svg id="q3-chart" role="img" aria-label="Q3 城市排名变化坡道图"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>城市</th><th class="num">全部行排名</th><th class="num">有效价排名</th><th class="num">排名变化</th></tr></thead><tbody id="q3-table"></tbody></table></div>
+    </section>
+
+    <section class="panel" id="q4">
+      <h2>Q4. 各校园区域的中位销售价由 2024 到 2025 变化多少？</h2>
+      <p class="subtle">有效价格范围内；每个区域分别取 2024 与 2025 的中位销售价。变化 = (2025−2024)÷2024。</p>
+      <div class="answer" id="q4-answer">计算中……</div>
+      <div class="chart-scroll"><svg id="q4-chart" role="img" aria-label="Q4 校园区域中位价变化率"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>校园区域</th><th class="num">2024 中位价</th><th class="num">2025 中位价</th><th class="num">变化</th></tr></thead><tbody id="q4-table"></tbody></table></div>
+    </section>
+
+    <section class="panel" id="q5">
+      <h2>Q5. 各校园区域的中位上市至签约天数是多少？</h2>
+      <p class="subtle">只使用同时有 <code>list_date</code> 和 <code>contract_date</code> 的行；空白日期不计为 0。</p>
+      <div class="answer" id="q5-answer">计算中……</div>
+      <div class="chart-scroll"><svg id="q5-chart" role="img" aria-label="Q5 校园区域中位上市天数"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>校园区域</th><th class="num">可用销售数</th><th class="num">中位天数</th></tr></thead><tbody id="q5-table"></tbody></table></div>
     </section>
   </main>
 
   <footer class="wrap">
-    <p>
-      <strong>Source:</strong> College-town home sales dataset, version 1.0 (2026).
-      University of Illinois-Deloitte Foundation Center for Business Emerging Technologies.
-      Data collected March 2026. See the <a href="docs/data_description_sheet.md">data description sheet</a>
-      for field definitions and limitations.
-    </p>
+    <p><strong>来源：</strong>College-town home sales dataset, version 1.0 (2026). University of Illinois-Deloitte Foundation Center for Business Emerging Technologies. 数据于 2026 年 3 月收集。详见 <a href="docs/data_description_sheet.md">data description sheet</a>。</p>
   </footer>
 
   <script>
@@ -139,117 +130,234 @@
     const PRICE_MAX = 5000000;
     const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
     const integer = new Intl.NumberFormat("en-US");
+    const oneDecimal = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1, minimumFractionDigits: 1 });
 
     function parseCsv(text) {
-      const rows = [];
-      let row = [];
-      let value = "";
-      let quoted = false;
-      for (let i = 0; i < text.length; i += 1) {
-        const char = text[i];
-        const next = text[i + 1];
-        if (char === '"' && quoted && next === '"') {
-          value += '"';
-          i += 1;
-        } else if (char === '"') {
-          quoted = !quoted;
-        } else if (char === "," && !quoted) {
+      const rows = [], row = [];
+      let value = "", quoted = false;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i], next = text[i + 1];
+        if (char === '"' && quoted && next === '"') { value += '"'; i++; }
+        else if (char === '"') quoted = !quoted;
+        else if (char === "," && !quoted) { row.push(value); value = ""; }
+        else if ((char === "\n" || char === "\r") && !quoted) {
+          if (char === "\r" && next === "\n") i++;
           row.push(value);
-          value = "";
-        } else if ((char === "\n" || char === "\r") && !quoted) {
-          if (char === "\r" && next === "\n") i += 1;
-          row.push(value);
-          if (row.some((cell) => cell !== "")) rows.push(row);
-          row = [];
-          value = "";
-        } else {
-          value += char;
-        }
+          if (row.some(cell => cell !== "")) rows.push(row);
+          row.length = 0; value = "";
+        } else value += char;
       }
-      if (value !== "" || row.length) {
-        row.push(value);
-        rows.push(row);
-      }
+      if (value !== "" || row.length) { row.push(value); rows.push(row); }
       const headers = rows.shift();
-      return rows.map((cells) => Object.fromEntries(headers.map((header, index) => [header, cells[index] ?? ""])));
+      return rows.map(cells => Object.fromEntries(headers.map((header, index) => [header, cells[index] ?? ""])));
     }
 
     function median(values) {
+      if (!values.length) return null;
       const sorted = [...values].sort((a, b) => a - b);
       const middle = Math.floor(sorted.length / 2);
       return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
     }
+    function mean(values) { return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null; }
+    function validPrice(row) { const price = Number(row.sale_price); return Number.isFinite(price) && price >= PRICE_MIN && price <= PRICE_MAX ? price : null; }
+    function cityName(row) { return `${row.city}, ${row.state}`; }
+    function escapeHtml(value) { return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]); }
 
-    function summarize(rows) {
-      const groups = new Map();
-      rows.forEach((row) => {
-        const price = Number(row.sale_price);
-        if (!Number.isFinite(price) || price < PRICE_MIN || price > PRICE_MAX) return;
-        const key = `${row.city}\u0000${row.state}`;
-        if (!groups.has(key)) groups.set(key, { city: row.city, state: row.state, prices: [] });
-        groups.get(key).prices.push(price);
-      });
-      return [...groups.values()]
-        .map((group) => ({ ...group, count: group.prices.length, median: median(group.prices) }))
-        .sort((a, b) => b.median - a.median || a.city.localeCompare(b.city));
-    }
-
-    function renderTable(summary) {
-      document.querySelector("#results").innerHTML = summary.map((group) => `
-        <tr>
-          <td>${group.city}, ${group.state}</td>
-          <td>${integer.format(group.count)}</td>
-          <td>${currency.format(group.median)}</td>
-        </tr>
-      `).join("");
-    }
-
-    function renderChart(summary) {
-      const svg = document.querySelector("#chart");
-      const width = 900;
-      const left = 170;
-      const right = 95;
-      const top = 18;
-      const rowHeight = 34;
-      const chartHeight = top + summary.length * rowHeight + 20;
+    function horizontalBar(svgId, items, valueKey, label, format, options = {}) {
+      const svg = document.querySelector(svgId);
+      const width = 900, left = options.left || 210, right = 110, top = 18, rowHeight = 34;
+      const chartHeight = top + items.length * rowHeight + 28;
       const plotWidth = width - left - right;
-      const max = Math.ceil(Math.max(...summary.map((group) => group.median)) / 100000) * 100000;
-      const ticks = 5;
+      const values = items.map(item => item[valueKey]);
+      const minValue = options.minZero ? Math.min(0, ...values) : (options.min ?? Math.min(...values));
+      const maxValue = options.maxZero ? Math.max(0, ...values) : (options.max ?? Math.max(...values));
+      const span = maxValue - minValue || 1;
       svg.setAttribute("viewBox", `0 0 ${width} ${chartHeight}`);
-      const parts = [];
-      for (let tick = 0; tick <= ticks; tick += 1) {
-        const x = left + (plotWidth * tick / ticks);
-        const value = max * tick / ticks;
-        parts.push(`<line class="gridline" x1="${x}" y1="${top - 4}" x2="${x}" y2="${chartHeight - 18}"></line>`);
-        parts.push(`<text class="axis-label" x="${x}" y="${chartHeight - 2}" text-anchor="middle">${currency.format(value)}</text>`);
+      let parts = [];
+      for (let tick = 0; tick <= 5; tick++) {
+        const fraction = tick / 5, x = left + plotWidth * fraction, value = minValue + span * fraction;
+        parts.push(`<line class="gridline" x1="${x}" y1="${top - 4}" x2="${x}" y2="${chartHeight - 22}"></line>`);
+        parts.push(`<text class="axis-label" x="${x}" y="${chartHeight - 5}" text-anchor="middle">${format(value)}</text>`);
       }
-      summary.forEach((group, index) => {
+      const zeroX = left + plotWidth * (0 - minValue) / span;
+      if (minValue < 0 && maxValue > 0) parts.push(`<line class="zero-line" x1="${zeroX}" y1="${top - 4}" x2="${zeroX}" y2="${chartHeight - 22}"></line>`);
+      items.forEach((item, index) => {
         const y = top + index * rowHeight;
-        const barWidth = plotWidth * group.median / max;
-        const label = `${group.city}, ${group.state}`;
-        parts.push(`<text class="city-label" x="${left - 12}" y="${y + 17}" text-anchor="end">${label}</text>`);
-        parts.push(`<rect class="bar" x="${left}" y="${y + 4}" width="${barWidth}" height="22" rx="5"><title>${label}: ${currency.format(group.median)}</title></rect>`);
-        parts.push(`<text class="value-label" x="${left + barWidth + 8}" y="${y + 19}">${currency.format(group.median)}</text>`);
+        const valueX = left + plotWidth * (item[valueKey] - minValue) / span;
+        const barX = item[valueKey] >= 0 ? left + plotWidth * (0 - minValue) / span : valueX;
+        const barWidth = Math.abs(valueX - zeroX);
+        parts.push(`<text class="city-label" x="${left - 12}" y="${y + 18}" text-anchor="end">${escapeHtml(item[label])}</text>`);
+        const cls = options.colorByValue ? (item[valueKey] >= 0 ? "bar-up" : "bar-down") : "bar";
+        if (options.isDiverging) {
+          parts.push(`<rect class="${cls}" x="${barX}" y="${y + 5}" width="${barWidth}" height="21" rx="4"><title>${escapeHtml(item[label])}: ${format(item[valueKey])}</title></rect>`);
+        } else {
+          const w = plotWidth * (item[valueKey] - minValue) / span;
+          parts.push(`<rect class="${cls}" x="${left}" y="${y + 5}" width="${Math.max(w, 1)}" height="21" rx="4"><title>${escapeHtml(item[label])}: ${format(item[valueKey])}</title></rect>`);
+        }
+        const valueTextX = options.isDiverging ? (item[valueKey] >= 0 ? valueX + 8 : valueX - 8) : left + plotWidth * (item[valueKey] - minValue) / span + 8;
+        parts.push(`<text class="value-label" x="${valueTextX}" y="${y + 19}" text-anchor="${options.isDiverging && item[valueKey] < 0 ? "end" : "start"}">${format(item[valueKey])}</text>`);
       });
-      svg.innerHTML = `<title id="chart-title">Median sale price by city and state</title><desc id="chart-description">Horizontal bars compare ${summary.length} cities using eligible sales only.</desc>${parts.join("")}`;
+      svg.innerHTML = parts.join("");
+    }
+
+    function rankRows(rows, getMean) {
+      const sorted = [...rows].sort((a, b) => getMean(b) - getMean(a) || a.city.localeCompare(b.city));
+      let last = null, rank = 0;
+      return sorted.map((row, index) => {
+        const value = getMean(row);
+        if (last === null || value !== last) rank = index + 1;
+        last = value;
+        return { ...row, rank };
+      });
+    }
+
+    function renderQ1(rows) {
+      const groups = new Map();
+      rows.forEach(row => {
+        const price = validPrice(row);
+        if (price === null) return;
+        const name = cityName(row);
+        if (!groups.has(name)) groups.set(name, { city: name, prices: [] });
+        groups.get(name).prices.push(price);
+      });
+      const summary = [...groups.values()].map(group => ({ city: group.city, count: group.prices.length, median: median(group.prices) })).sort((a, b) => b.median - a.median);
+      const top = summary.filter(item => item.median === summary[0].median);
+      document.querySelector("#q1-answer").innerHTML = `<strong>${top.map(item => escapeHtml(item.city)).join("、")} 中位销售价最高：</strong> ${top.map(item => currency.format(item.median)).join("、")}。`;
+      document.querySelector("#q1-table").innerHTML = summary.map(item => `<tr><td>${escapeHtml(item.city)}</td><td class="num">${integer.format(item.count)}</td><td class="num">${currency.format(item.median)}</td></tr>`).join("");
+      horizontalBar("#q1-chart", summary, "median", "city", currency.format.bind(currency), { left: 210, minZero: true });
+    }
+
+    function renderQ2(rows) {
+      const groups = new Map();
+      rows.forEach(row => {
+        const price = Number(row.sale_price);
+        if (!Number.isFinite(price)) return;
+        const name = cityName(row);
+        if (!groups.has(name)) groups.set(name, { city: name, prices: [] });
+        groups.get(name).prices.push(price);
+      });
+      const summary = [...groups.values()].map(group => {
+        const average = mean(group.prices), middle = median(group.prices);
+        return { city: group.city, mean: average, median: middle, gap: middle ? (average - middle) / middle : 0 };
+      }).sort((a, b) => b.gap - a.gap);
+      const top = summary.filter(item => item.gap === summary[0].gap);
+      document.querySelector("#q2-answer").innerHTML = `<strong>差距最大：</strong>${top.map(item => `${escapeHtml(item.city)}（平均 ${currency.format(item.mean)}、中位数 ${currency.format(item.median)}，差距 ${oneDecimal.format(item.gap * 100)}%）`).join("；")}。极值高价销售拉高了平均值。`;
+      document.querySelector("#q2-table").innerHTML = summary.map(item => `<tr><td>${escapeHtml(item.city)}</td><td class="num">${currency.format(item.mean)}</td><td class="num">${currency.format(item.median)}</td><td class="num">${oneDecimal.format(item.gap * 100)}%</td></tr>`).join("");
+      horizontalBar("#q2-chart", summary, "gap", "city", value => `${oneDecimal.format(value * 100)}%`, { left: 210, minZero: true });
+    }
+
+    function renderQ3(rows) {
+      const allGroups = new Map(), validGroups = new Map();
+      rows.forEach(row => {
+        const allName = cityName(row), allPrice = Number(row.sale_price);
+        if (Number.isFinite(allPrice)) {
+          if (!allGroups.has(allName)) allGroups.set(allName, { city: allName, prices: [] });
+          allGroups.get(allName).prices.push(allPrice);
+        }
+        const valid = validPrice(row);
+        if (valid !== null) {
+          if (!validGroups.has(allName)) validGroups.set(allName, { city: allName, prices: [] });
+          validGroups.get(allName).prices.push(valid);
+        }
+      });
+      const allMeans = [...allGroups.values()].map(row => ({ city: row.city, mean: mean(row.prices) }));
+      const validMeans = [...validGroups.values()].map(row => ({ city: row.city, mean: mean(row.prices) }));
+      const allRanked = rankRows(allMeans, row => row.mean);
+      const validRanked = rankRows(validMeans, row => row.mean);
+      const validRankMap = new Map(validRanked.map(row => [row.city, row.rank]));
+      const allRankMap = new Map(allRanked.map(row => [row.city, row.rank]));
+      const cities = allRanked.map(row => row.city).sort((a, b) => a.localeCompare(b));
+      const changes = cities.map(city => {
+        const allRank = allRankMap.get(city), validRank = validRankMap.get(city);
+        return { city, allRank, validRank, change: allRank - validRank };
+      }).filter(item => item.change !== 0).sort((a, b) => Math.abs(b.change) - Math.abs(a.change) || a.city.localeCompare(b.city));
+      document.querySelector("#q3-answer").innerHTML = changes.length
+        ? `<strong>排名发生变化：</strong>${changes.map(item => `${escapeHtml(item.city)}（第 ${item.allRank} 名 → 第 ${item.validRank} 名，变化 ${item.change > 0 ? "+" : ""}${item.change} 位）`).join("；")}。正数表示过滤后排名上升，负数表示下降。`
+        : "<strong>没有城市改变排名。</strong>";
+
+      const validMap = new Map(validMeans.map(row => [row.city, row.mean]));
+      const allMap = new Map(allMeans.map(row => [row.city, row.mean]));
+      document.querySelector("#q3-table").innerHTML = cities.map(city => {
+        const allRank = allRankMap.get(city), validRank = validRankMap.get(city), change = allRank - validRank;
+        return `<tr><td>${escapeHtml(city)}</td><td class="num">${allRank}</td><td class="num">${validRank}</td><td class="num">${change === 0 ? "0" : (change > 0 ? "+" : "") + change}</td></tr>`;
+      }).join("");
+
+      const width = 900, left = 200, right = 250, top = 25, bottom = 25;
+      const height = top + bottom + cities.length * 28;
+      const svg = document.querySelector("#q3-chart");
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      const maxRank = Math.max(...allRanked.map(row => row.rank), ...validRanked.map(row => row.rank));
+      const y = city => top + cities.indexOf(city) * 28;
+      const allX = left, validX = width - right;
+      let parts = [];
+      for (let rank = 1; rank <= maxRank; rank++) {
+        const yy = top + (rank - 1) * (height - top - bottom) / Math.max(maxRank - 1, 1);
+        parts.push(`<text class="axis-label" x="${allX}" y="${yy + 12}" text-anchor="middle">${rank}</text><text class="axis-label" x="${validX}" y="${yy + 12}" text-anchor="middle">${rank}</text>`);
+      }
+      parts.push(`<text class="city-label" x="${allX}" y="12" text-anchor="middle">全部行排名</text><text class="city-label" x="${validX}" y="12" text-anchor="middle">有效价排名</text>`);
+      cities.forEach(city => {
+        const ar = allRankMap.get(city), vr = validRankMap.get(city);
+        const ay = top + (ar - 1) * (height - top - bottom) / Math.max(maxRank - 1, 1);
+        const vy = top + (vr - 1) * (height - top - bottom) / Math.max(maxRank - 1, 1);
+        parts.push(`<line x1="${allX + 20}" y1="${ay}" x2="${validX - 20}" y2="${vy}" stroke="${ar === vr ? "#8aa0c4" : "#2864c7"}" stroke-width="${ar === vr ? 1 : 2}" opacity=".75"></line>`);
+        parts.push(`<circle cx="${allX + 20}" cy="${ay}" r="4" fill="#2864c7"></circle><circle cx="${validX - 20}" cy="${vy}" r="4" fill="#2864c7"></circle>`);
+        parts.push(`<text class="city-label" x="${left + 55}" y="${y(city) + 18}" text-anchor="end">${escapeHtml(city)}</text>`);
+      });
+      svg.innerHTML = parts.join("");
+    }
+
+    function renderQ4(rows) {
+      const groups = new Map();
+      rows.forEach(row => {
+        const price = validPrice(row), year = String(row.sale_date).slice(0, 4);
+        if (price === null || (year !== "2024" && year !== "2025")) return;
+        const university = row.university;
+        if (!groups.has(university)) groups.set(university, { "2024": [], "2025": [] });
+        groups.get(university)[year].push(price);
+      });
+      const summary = [...groups].map(([campus, years]) => {
+        const m2024 = median(years["2024"]), m2025 = median(years["2025"]);
+        return { campus, m2024, m2025, change: m2024 ? (m2025 - m2024) / m2024 : null };
+      }).filter(item => item.change !== null).sort((a, b) => b.change - a.change);
+      const largest = summary[0], decreases = summary.filter(item => item.change < 0);
+      document.querySelector("#q4-answer").innerHTML = `<strong>最大涨幅：</strong>${escapeHtml(largest.campus)}（${oneDecimal.format(largest.change * 100)}%，${currency.format(largest.m2024)} → ${currency.format(largest.m2025)}）。<strong>下降区域：</strong>${decreases.length ? decreases.map(item => `${escapeHtml(item.campus)}（${oneDecimal.format(item.change * 100)}%）`).join("、") : "无"}。`;
+      document.querySelector("#q4-table").innerHTML = summary.map(item => `<tr><td>${escapeHtml(item.campus)}</td><td class="num">${currency.format(item.m2024)}</td><td class="num">${currency.format(item.m2025)}</td><td class="num ${item.change >= 0 ? "up" : "down"}">${item.change >= 0 ? "+" : ""}${oneDecimal.format(item.change * 100)}%</td></tr>`).join("");
+      horizontalBar("#q4-chart", summary, "change", "campus", value => `${oneDecimal.format(value * 100)}%`, { left: 250, minZero: true, maxZero: true, isDiverging: true, colorByValue: true });
+    }
+
+    function renderQ5(rows) {
+      const groups = new Map();
+      rows.forEach(row => {
+        if (!row.list_date || !row.contract_date) return;
+        const list = new Date(`${row.list_date}T00:00:00Z`);
+        const contract = new Date(`${row.contract_date}T00:00:00Z`);
+        if (Number.isNaN(list.getTime()) || Number.isNaN(contract.getTime())) return;
+        const days = (contract - list) / 86400000;
+        if (!groups.has(row.university)) groups.set(row.university, []);
+        groups.get(row.university).push(days);
+      });
+      const summary = [...groups].map(([campus, days]) => ({ campus, count: days.length, median: median(days) })).sort((a, b) => b.median - a.median);
+      const slowest = summary.filter(item => item.median === summary[0].median);
+      const fastest = [...summary].sort((a, b) => a.median - b.median)[0];
+      const fastestTie = summary.filter(item => item.median === fastest.median);
+      document.querySelector("#q5-answer").innerHTML = `<strong>最慢：</strong>${slowest.map(item => `${escapeHtml(item.campus)}（${oneDecimal.format(item.median)} 天）`).join("、")}。<strong>最快：</strong>${fastestTie.map(item => `${escapeHtml(item.campus)}（${oneDecimal.format(item.median)} 天）`).join("、")}。`;
+      document.querySelector("#q5-table").innerHTML = summary.map(item => `<tr><td>${escapeHtml(item.campus)}</td><td class="num">${integer.format(item.count)}</td><td class="num">${oneDecimal.format(item.median)}</td></tr>`).join("");
+      horizontalBar("#q5-chart", [...summary].sort((a, b) => b.median - a.median), "median", "campus", value => `${oneDecimal.format(value)} 天`, { left: 250, minZero: true });
     }
 
     async function load() {
-      const status = document.querySelector("#chart-status");
+      const status = document.querySelector("#load-status");
       try {
         const response = await fetch("data/college_town_home_sales.csv");
-        if (!response.ok) throw new Error(`Dataset request failed (${response.status})`);
-        const summary = summarize(parseCsv(await response.text()));
-        if (!summary.length) throw new Error("No eligible sales were found.");
-        renderTable(summary);
-        renderChart(summary);
-        status.textContent = `${integer.format(summary.reduce((total, group) => total + group.count, 0))} eligible sales across ${summary.length} cities.`;
+        if (!response.ok) throw new Error(`数据请求失败（${response.status}）`);
+        const rows = parseCsv(await response.text());
+        renderQ1(rows); renderQ2(rows); renderQ3(rows); renderQ4(rows); renderQ5(rows);
+        status.textContent = `已加载 ${integer.format(rows.length)} 行销售数据。`;
       } catch (error) {
         status.className = "status error";
-        status.textContent = `Unable to load the dataset: ${error.message}`;
+        status.textContent = `无法加载数据集：${error.message}`;
       }
     }
-
     load();
   </script>
 </body>
