@@ -11,68 +11,52 @@
       --ink: #17233c;
       --muted: #5e6b82;
       --line: #dce3ee;
-      --panel: #ffffff;
+      --panel: #fff;
       --page: #f4f7fb;
       --accent: #2864c7;
       --accent-dark: #174b9d;
-      --accent-soft: #dbe9ff;
+      --good: #16835a;
+      --bad: #bd4b4b;
     }
-
     * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--page);
-      color: var(--ink);
-      font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
+    body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     .wrap { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
-
-    header {
-      padding: 4.5rem 0 3.25rem;
-      background: linear-gradient(135deg, #102d62, #2864c7);
-      color: #fff;
-    }
+    header { padding: 4.5rem 0 3rem; background: linear-gradient(135deg, #102d62, #2864c7); color: #fff; }
+    header p { margin: 0 0 .75rem; }
     header .subtle { color: #b9d1ff; }
-
-    h1, h2, p { margin-top: 0; }
-    h1 { max-width: 760px; margin-bottom: 1rem; font-size: clamp(2.2rem, 6vw, 4.4rem); line-height: 1.04; letter-spacing: -0.04em; }
-    header p { max-width: 680px; margin-bottom: 0; color: #dfeaff; font-size: 1.1rem; }
-
+    h1 { max-width: 800px; margin: 0 0 1rem; font-size: clamp(2.2rem, 6vw, 4.4rem); line-height: 1.04; letter-spacing: -.04em; }
+    header .lede { max-width: 700px; margin: 0; color: #dfeaff; font-size: 1.1rem; }
     main { padding: 2rem 0 4rem; }
-    .intro, .panel {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--panel);
-      box-shadow: 0 10px 30px rgb(23 35 60 / 6%);
-    }
+    .intro, .panel { border: 1px solid var(--line); border-radius: 18px; background: var(--panel); box-shadow: 0 10px 30px rgb(23 35 60 / 6%); }
     .intro { padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
     .intro strong { color: var(--accent-dark); }
-    .panel { padding: 1.5rem; margin-bottom: 1.5rem; }
-    h2 { margin-bottom: .35rem; font-size: 1.35rem; }
-    .subtle, .status { color: var(--muted); }
-    .status { min-height: 1.5em; margin: .75rem 0 0; }
-
+    .panel { padding: 1.5rem; margin-bottom: 1.5rem; scroll-margin-top: 1rem; }
+    h2 { margin: 0 0 .35rem; font-size: 1.35rem; }
+    h3 { margin: 1.25rem 0 .5rem; font-size: 1rem; }
+    .subtle { color: var(--muted); }
+    .answer { margin: .8rem 0 1rem; padding: .85rem 1rem; border-left: 4px solid var(--accent); background: #edf4ff; border-radius: 0 10px 10px 0; }
+    .answer strong { color: var(--accent-dark); }
     .chart-scroll { overflow-x: auto; padding-bottom: .25rem; }
     svg { display: block; min-width: 720px; width: 100%; height: auto; }
+    .gridline { stroke: var(--line); stroke-width: 1; }
+    .axis-label, .value-label { fill: var(--muted); font-size: 12px; }
+    .label { fill: var(--ink); font-size: 12px; font-weight: 600; }
     .bar { fill: var(--accent); }
     .bar:hover { fill: var(--accent-dark); }
-    .axis-label, .value-label { fill: var(--muted); font-size: 12px; }
-    .city-label { fill: var(--ink); font-size: 13px; font-weight: 600; }
-    .gridline { stroke: var(--line); stroke-width: 1; }
-
+    .good { fill: var(--good); }
+    .bad { fill: var(--bad); }
+    .slope-2024 { stroke: #8aa4ca; }
+    .slope-2025 { stroke: var(--accent); }
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
-    th, td { padding: .8rem .65rem; border-bottom: 1px solid var(--line); text-align: left; }
+    th, td { padding: .75rem .65rem; border-bottom: 1px solid var(--line); text-align: left; }
     th { color: var(--muted); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
-    td:nth-child(2), td:nth-child(3), th:nth-child(2), th:nth-child(3) { text-align: right; white-space: nowrap; }
+    td:not(:first-child), th:not(:first-child) { text-align: right; white-space: nowrap; }
     tbody tr:last-child td { border-bottom: 0; }
-
+    .status { min-height: 1.5em; color: var(--muted); }
+    .error { color: #a52b2b; }
     footer { padding: 0 0 2.5rem; color: var(--muted); font-size: .9rem; }
     footer a { color: var(--accent-dark); }
-    .error { color: #a52b2b; }
-
     @media (max-width: 640px) {
       .wrap { width: min(100% - 1rem, 1120px); }
       header { padding: 3rem 0 2.5rem; }
@@ -87,51 +71,59 @@
     <div class="wrap">
       <p class="subtle">A data view of 35,442 completed sales around college towns</p>
       <h1>College-Town Home Sales Explorer</h1>
-      <p>Compare the typical sale price and volume of homes sold across the cities in this dataset.</p>
+      <p class="lede">Compare median prices, campus-area trends, and time on market across the dataset.</p>
     </div>
   </header>
 
   <main class="wrap">
     <section class="intro" aria-label="Filtering rule">
       <strong>How to read these numbers:</strong>
-      Every count and price statistic on this page uses each row as one sale, without deduplicating
-      street addresses. We include sale prices from <strong>$10,000 through $5,000,000</strong>,
-      inclusive, to leave out the implausible low and high values described in the data notes.
+      Q1–Q5 use every sale in the dataset whose sale price is from
+      <strong>$10,000 through $5,000,000, inclusive</strong>. Each listing is counted once using
+      <strong>listing_id</strong>; repeated street addresses are not deduplicated.
+      Days on market are <strong>contract_date minus list_date</strong>, and only rows with both dates are used.
     </section>
 
-    <section class="panel">
-      <h2>Median sale price by city and state</h2>
-      <p class="subtle">Bars are ordered from highest to lowest median. Hover or focus a bar for its exact value.</p>
-      <div class="chart-scroll">
-        <svg id="chart" role="img" aria-labelledby="chart-title chart-description">
-          <title id="chart-title">Median sale price by city and state</title>
-          <desc id="chart-description">A horizontal bar chart populated from the home sales CSV.</desc>
-        </svg>
-      </div>
-      <p id="chart-status" class="status" role="status">Loading the dataset…</p>
+    <section class="panel" id="q1">
+      <h2>Q1. Median sale price by city</h2>
+      <p id="q1-answer" class="answer" role="status">Calculating…</p>
+      <p class="subtle">Horizontal bar chart: median sale price of every city (highest to lowest).</p>
+      <div class="chart-scroll"><svg id="q1-chart" role="img" aria-label="Q1 median sale price by city"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>City</th><th>Median sale price</th></tr></thead><tbody id="q1-table"></tbody></table></div>
     </section>
 
-    <section class="panel">
-      <h2>Eligible sales by city and state</h2>
-      <p class="subtle">Eligible sale count and median sale price after applying the stated price filter.</p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th scope="col">City and state</th><th scope="col">Eligible sales</th><th scope="col">Median sale price</th></tr>
-          </thead>
-          <tbody id="results"></tbody>
-        </table>
-      </div>
+    <section class="panel" id="q2">
+      <h2>Q2. Mean-vs-median gap by city</h2>
+      <p id="q2-answer" class="answer" role="status">Calculating…</p>
+      <p class="subtle">Q2 uses all rows, as specified, even implausible prices.</p>
+      <div class="table-wrap"><table><thead><tr><th>City</th><th>Mean sale price</th><th>Median sale price</th><th>Gap</th></tr></thead><tbody id="q2-table"></tbody></table></div>
+    </section>
+
+    <section class="panel" id="q3">
+      <h2>Q3. City mean-price ranks: all rows vs. valid prices</h2>
+      <p id="q3-answer" class="answer" role="status">Calculating…</p>
+      <div class="table-wrap"><table><thead><tr><th>City</th><th>All-row mean</th><th>All-row rank</th><th>Valid-price mean</th><th>Valid-price rank</th><th>Change</th></tr></thead><tbody id="q3-table"></tbody></table></div>
+    </section>
+
+    <section class="panel" id="q4">
+      <h2>Q4. Median sale-price change by campus area, 2024–2025</h2>
+      <p id="q4-answer" class="answer" role="status">Calculating…</p>
+      <p class="subtle">Slope chart: left point is 2024 median and right point is 2025 median.</p>
+      <div class="chart-scroll"><svg id="q4-chart" role="img" aria-label="Q4 campus median sale prices by year"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>Campus area</th><th>2024 median</th><th>2025 median</th><th>Change</th></tr></thead><tbody id="q4-table"></tbody></table></div>
+    </section>
+
+    <section class="panel" id="q5">
+      <h2>Q5. Median days on market by campus area</h2>
+      <p id="q5-answer" class="answer" role="status">Calculating…</p>
+      <p class="subtle">Dot plot: each point is a campus area's median number of days from listing to contract.</p>
+      <div class="chart-scroll"><svg id="q5-chart" role="img" aria-label="Q5 median days on market by campus area"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>Campus area</th><th>Median days</th><th>Sales with both dates</th></tr></thead><tbody id="q5-table"></tbody></table></div>
     </section>
   </main>
 
   <footer class="wrap">
-    <p>
-      <strong>Source:</strong> College-town home sales dataset, version 1.0 (2026).
-      University of Illinois-Deloitte Foundation Center for Business Emerging Technologies.
-      Data collected March 2026. See the <a href="docs/data_description_sheet.md">data description sheet</a>
-      for field definitions and limitations.
-    </p>
+    <p><strong>Source:</strong> College-town home sales dataset, version 1.0 (2026). University of Illinois-Deloitte Foundation Center for Business Emerging Technologies. <a href="docs/data_description_sheet.md">Data description sheet</a>.</p>
   </footer>
 
   <script>
@@ -139,117 +131,207 @@
     const PRICE_MAX = 5000000;
     const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
     const integer = new Intl.NumberFormat("en-US");
+    const decimal = new Intl.NumberFormat("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
     function parseCsv(text) {
-      const rows = [];
-      let row = [];
-      let value = "";
-      let quoted = false;
-      for (let i = 0; i < text.length; i += 1) {
-        const char = text[i];
-        const next = text[i + 1];
-        if (char === '"' && quoted && next === '"') {
-          value += '"';
-          i += 1;
-        } else if (char === '"') {
-          quoted = !quoted;
-        } else if (char === "," && !quoted) {
+      const rows = [], row = [];
+      let value = "", quoted = false;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i], next = text[i + 1];
+        if (char === '"' && quoted && next === '"') { value += '"'; i++; }
+        else if (char === '"') quoted = !quoted;
+        else if (char === "," && !quoted) { row.push(value); value = ""; }
+        else if ((char === "\n" || char === "\r") && !quoted) {
+          if (char === "\r" && next === "\n") i++;
           row.push(value);
-          value = "";
-        } else if ((char === "\n" || char === "\r") && !quoted) {
-          if (char === "\r" && next === "\n") i += 1;
-          row.push(value);
-          if (row.some((cell) => cell !== "")) rows.push(row);
-          row = [];
-          value = "";
-        } else {
-          value += char;
-        }
+          if (row.some((cell) => cell !== "")) rows.push([...row]);
+          row.length = 0; value = "";
+        } else value += char;
       }
-      if (value !== "" || row.length) {
-        row.push(value);
-        rows.push(row);
-      }
+      if (value !== "" || row.length) { row.push(value); rows.push(row); }
       const headers = rows.shift();
-      return rows.map((cells) => Object.fromEntries(headers.map((header, index) => [header, cells[index] ?? ""])));
+      return rows.map((cells) => Object.fromEntries(headers.map((h, i) => [h, cells[i] ?? ""])));
     }
 
     function median(values) {
+      if (!values.length) return null;
       const sorted = [...values].sort((a, b) => a - b);
       const middle = Math.floor(sorted.length / 2);
       return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
     }
-
-    function summarize(rows) {
+    function mean(values) { return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null; }
+    function validPrice(row) { const price = Number(row.sale_price); return Number.isFinite(price) && price >= PRICE_MIN && price <= PRICE_MAX; }
+    function cityKey(row) { return `${row.city}, ${row.state}`; }
+    function group(rows, keyFn) {
       const groups = new Map();
       rows.forEach((row) => {
-        const price = Number(row.sale_price);
-        if (!Number.isFinite(price) || price < PRICE_MIN || price > PRICE_MAX) return;
-        const key = `${row.city}\u0000${row.state}`;
-        if (!groups.has(key)) groups.set(key, { city: row.city, state: row.state, prices: [] });
-        groups.get(key).prices.push(price);
+        const key = keyFn(row);
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(row);
       });
-      return [...groups.values()]
-        .map((group) => ({ ...group, count: group.prices.length, median: median(group.prices) }))
-        .sort((a, b) => b.median - a.median || a.city.localeCompare(b.city));
+      return groups;
+    }
+    function maxTie(items, valueFn) {
+      const max = Math.max(...items.map(valueFn));
+      return items.filter((item) => valueFn(item) === max).map((item) => item.name || item.key);
+    }
+    function minTie(items, valueFn) {
+      const min = Math.min(...items.map(valueFn));
+      return items.filter((item) => valueFn(item) === min).map((item) => item.name || item.key);
     }
 
-    function renderTable(summary) {
-      document.querySelector("#results").innerHTML = summary.map((group) => `
-        <tr>
-          <td>${group.city}, ${group.state}</td>
-          <td>${integer.format(group.count)}</td>
-          <td>${currency.format(group.median)}</td>
-        </tr>
-      `).join("");
-    }
-
-    function renderChart(summary) {
-      const svg = document.querySelector("#chart");
-      const width = 900;
-      const left = 170;
-      const right = 95;
-      const top = 18;
-      const rowHeight = 34;
-      const chartHeight = top + summary.length * rowHeight + 20;
-      const plotWidth = width - left - right;
-      const max = Math.ceil(Math.max(...summary.map((group) => group.median)) / 100000) * 100000;
-      const ticks = 5;
-      svg.setAttribute("viewBox", `0 0 ${width} ${chartHeight}`);
+    function renderHorizontalBars(svgId, items, valueFn, labelFn, formatter) {
+      const svg = document.querySelector(svgId);
+      const width = 900, left = 170, right = 110, top = 18, rowHeight = 34;
+      const height = top + items.length * rowHeight + 30, plotWidth = width - left - right;
+      const max = Math.max(...items.map(valueFn)) * 1.08;
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
       const parts = [];
-      for (let tick = 0; tick <= ticks; tick += 1) {
-        const x = left + (plotWidth * tick / ticks);
-        const value = max * tick / ticks;
-        parts.push(`<line class="gridline" x1="${x}" y1="${top - 4}" x2="${x}" y2="${chartHeight - 18}"></line>`);
-        parts.push(`<text class="axis-label" x="${x}" y="${chartHeight - 2}" text-anchor="middle">${currency.format(value)}</text>`);
+      for (let i = 0; i <= 5; i++) {
+        const x = left + plotWidth * i / 5;
+        parts.push(`<line class="gridline" x1="${x}" y1="${top - 4}" x2="${x}" y2="${height - 24}"></line>`);
+        parts.push(`<text class="axis-label" x="${x}" y="${height - 6}" text-anchor="middle">${formatter(max * i / 5)}</text>`);
       }
-      summary.forEach((group, index) => {
-        const y = top + index * rowHeight;
-        const barWidth = plotWidth * group.median / max;
-        const label = `${group.city}, ${group.state}`;
-        parts.push(`<text class="city-label" x="${left - 12}" y="${y + 17}" text-anchor="end">${label}</text>`);
-        parts.push(`<rect class="bar" x="${left}" y="${y + 4}" width="${barWidth}" height="22" rx="5"><title>${label}: ${currency.format(group.median)}</title></rect>`);
-        parts.push(`<text class="value-label" x="${left + barWidth + 8}" y="${y + 19}">${currency.format(group.median)}</text>`);
+      items.forEach((item, i) => {
+        const y = top + i * rowHeight;
+        const widthPx = plotWidth * valueFn(item) / max;
+        parts.push(`<text class="label" x="${left - 12}" y="${y + 17}" text-anchor="end">${labelFn(item)}</text>`);
+        parts.push(`<rect class="bar" x="${left}" y="${y + 4}" width="${widthPx}" height="22" rx="5"><title>${labelFn(item)}: ${formatter(valueFn(item))}</title></rect>`);
+        parts.push(`<text class="value-label" x="${left + widthPx + 8}" y="${y + 19}">${formatter(valueFn(item))}</text>`);
       });
-      svg.innerHTML = `<title id="chart-title">Median sale price by city and state</title><desc id="chart-description">Horizontal bars compare ${summary.length} cities using eligible sales only.</desc>${parts.join("")}`;
+      svg.innerHTML = parts.join("");
+    }
+
+    function renderSlopeChart(items) {
+      const svg = document.querySelector("#q4-chart");
+      const width = 900, left = 180, right = 720, top = 35, bottom = 500;
+      const allValues = items.flatMap((item) => [item.median2024, item.median2025]).filter((v) => v != null);
+      const min = Math.min(...allValues) * .95, max = Math.max(...allValues) * 1.05;
+      const xScale = (value) => top + (bottom - top) * (value - min) / (max - min);
+      svg.setAttribute("viewBox", `0 0 ${width} ${bottom + 50}`);
+      const sorted = [...items].sort((a, b) => b.change - a.change);
+      const parts = [
+        `<text class="label" x="${left}" y="20" text-anchor="middle">2024</text>`,
+        `<text class="label" x="${right}" y="20" text-anchor="middle">2025</text>`
+      ];
+      sorted.forEach((item, i) => {
+        if (item.median2024 == null || item.median2025 == null) return;
+        const y = 55 + i * 38;
+        const y1 = xScale(item.median2024), y2 = xScale(item.median2025);
+        parts.push(`<text class="label" x="${left - 12}" y="${y + 4}" text-anchor="end">${item.name}</text>`);
+        parts.push(`<line x1="${left}" y1="${y1}" x2="${right}" y2="${y2}" stroke="${item.change >= 0 ? "#16835a" : "#bd4b4b"}" stroke-width="2"></line>`);
+        parts.push(`<circle cx="${left}" cy="${y1}" r="5" fill="#8aa4ca"><title>2024 ${item.name}: ${currency.format(item.median2024)}</title></circle>`);
+        parts.push(`<circle cx="${right}" cy="${y2}" r="5" fill="#2864c7"><title>2025 ${item.name}: ${currency.format(item.median2025)}; ${decimal.format(item.change)}%</title></circle>`);
+        parts.push(`<text class="value-label" x="${left + 10}" y="${y1 - 7}">${currency.format(item.median2024)}</text>`);
+        parts.push(`<text class="value-label" x="${right + 10}" y="${y2 - 7}">${currency.format(item.median2025)} (${item.change >= 0 ? "+" : ""}${decimal.format(item.change)}%)</text>`);
+      });
+      svg.innerHTML = parts.join("");
+    }
+
+    function renderDotPlot(items) {
+      const svg = document.querySelector("#q5-chart");
+      const width = 900, left = 260, right = 90, top = 20, rowHeight = 38;
+      const height = top + items.length * rowHeight + 35, plotWidth = width - left - right;
+      const max = Math.max(...items.map((item) => item.median)) * 1.08;
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      const parts = [];
+      for (let i = 0; i <= 5; i++) {
+        const x = left + plotWidth * i / 5;
+        parts.push(`<line class="gridline" x1="${x}" y1="${top - 4}" x2="${x}" y2="${height - 25}"></line>`);
+        parts.push(`<text class="axis-label" x="${x}" y="${height - 7}" text-anchor="middle">${decimal.format(max * i / 5)} days</text>`);
+      }
+      items.forEach((item, i) => {
+        const y = top + i * rowHeight;
+        const x = left + plotWidth * item.median / max;
+        parts.push(`<text class="label" x="${left - 12}" y="${y + 17}" text-anchor="end">${item.name}</text>`);
+        parts.push(`<circle cx="${x}" cy="${y + 12}" r="8" fill="#2864c7"><title>${item.name}: ${decimal.format(item.median)} days; ${integer.format(item.count)} sales</title></circle>`);
+        parts.push(`<text class="value-label" x="${x + 12}" y="${y + 16}">${decimal.format(item.median)} days</text>`);
+      });
+      svg.innerHTML = parts.join("");
     }
 
     async function load() {
-      const status = document.querySelector("#chart-status");
+      const statusTargets = document.querySelectorAll(".answer");
       try {
         const response = await fetch("data/college_town_home_sales.csv");
         if (!response.ok) throw new Error(`Dataset request failed (${response.status})`);
-        const summary = summarize(parseCsv(await response.text()));
-        if (!summary.length) throw new Error("No eligible sales were found.");
-        renderTable(summary);
-        renderChart(summary);
-        status.textContent = `${integer.format(summary.reduce((total, group) => total + group.count, 0))} eligible sales across ${summary.length} cities.`;
+        const allRows = parseCsv(await response.text());
+        const validRows = allRows.filter(validPrice);
+
+        // Q1
+        const q1Items = [...group(validRows, cityKey).entries()].map(([name, rows]) => ({
+          name, count: rows.length, median: median(rows.map((row) => Number(row.sale_price)))
+        })).sort((a, b) => b.median - a.median || a.name.localeCompare(b.name));
+        const q1Highest = maxTie(q1Items, (item) => item.median);
+        document.querySelector("#q1-answer").innerHTML = `<strong>Highest median:</strong> ${q1Highest.join("; ")} at ${currency.format(Math.max(...q1Items.map((item) => item.median)))}.`;
+        document.querySelector("#q1-table").innerHTML = q1Items.map((item) => `<tr><td>${item.name}</td><td>${currency.format(item.median)}</td></tr>`).join("");
+        renderHorizontalBars("#q1-chart", q1Items, (item) => item.median, (item) => item.name, (value) => currency.format(value));
+
+        // Q2
+        const q2Items = [...group(allRows, cityKey).entries()].map(([name, rows]) => {
+          const prices = rows.map((row) => Number(row.sale_price));
+          const meanPrice = mean(prices), medianPrice = median(prices);
+          return { name, mean: meanPrice, median: medianPrice, gap: (meanPrice - medianPrice) / medianPrice * 100 };
+        }).sort((a, b) => b.gap - a.gap || a.name.localeCompare(b.name));
+        const q2Largest = q2Items[0];
+        document.querySelector("#q2-answer").innerHTML = `<strong>Largest gap:</strong> ${q2Largest.name}, with mean ${currency.format(q2Largest.mean)}, median ${currency.format(q2Largest.median)}, and a gap of ${decimal.format(q2Largest.gap)}%. Extreme high sale prices raise the mean relative to the median.`;
+        document.querySelector("#q2-table").innerHTML = q2Items.map((item) => `<tr><td>${item.name}</td><td>${currency.format(item.mean)}</td><td>${currency.format(item.median)}</td><td>${decimal.format(item.gap)}%</td></tr>`).join("");
+
+        // Q3
+        const allMeanItems = [...group(allRows, cityKey).entries()].map(([name, rows]) => ({ name, mean: mean(rows.map((row) => Number(row.sale_price))) }));
+        const validMeanItems = [...group(validRows, cityKey).entries()].map(([name, rows]) => ({ name, mean: mean(rows.map((row) => Number(row.sale_price))) }));
+        allMeanItems.sort((a, b) => b.mean - a.mean || a.name.localeCompare(b.name));
+        validMeanItems.sort((a, b) => b.mean - a.mean || a.name.localeCompare(b.name));
+        const allRank = new Map(allMeanItems.map((item, i) => [item.name, i + 1]));
+        const validRank = new Map(validMeanItems.map((item, i) => [item.name, i + 1]));
+        const q3Items = allMeanItems.map((item) => {
+          const valid = validMeanItems.find((candidate) => candidate.name === item.name);
+          return { name: item.name, allMean: item.mean, allRank: allRank.get(item.name), validMean: valid.mean, validRank: validRank.get(item.name), change: allRank.get(item.name) - validRank.get(item.name) };
+        });
+        const changed = q3Items.filter((item) => item.change !== 0).sort((a, b) => a.name.localeCompare(b.name));
+        document.querySelector("#q3-answer").innerHTML = changed.length
+          ? `<strong>Rank changes:</strong> ${changed.map((item) => `${item.name} moved ${item.change > 0 ? "up" : "down"} ${integer.format(Math.abs(item.change))} position${Math.abs(item.change) === 1 ? "" : "s"} (${item.allRank} to ${item.validRank})`).join("; ")}.`
+          : "<strong>Rank changes:</strong> No city changed rank.";
+        document.querySelector("#q3-table").innerHTML = [...q3Items].sort((a, b) => a.allRank - b.allRank).map((item) =>
+          `<tr><td>${item.name}</td><td>${currency.format(item.allMean)}</td><td>${item.allRank}</td><td>${currency.format(item.validMean)}</td><td>${item.validRank}</td><td>${item.change === 0 ? "0" : (item.change > 0 ? "+" : "") + item.change}</td></tr>`
+        ).join("");
+
+        // Q4
+        const campusGroups = group(validRows, (row) => row.university);
+        const q4Items = [...campusGroups.entries()].map(([name, rows]) => {
+          const in2024 = rows.filter((row) => row.sale_date && row.sale_date.slice(0, 4) === "2024");
+          const in2025 = rows.filter((row) => row.sale_date && row.sale_date.slice(0, 4) === "2025");
+          const median2024 = median(in2024.map((row) => Number(row.sale_price)));
+          const median2025 = median(in2025.map((row) => Number(row.sale_price)));
+          return { name, median2024, median2025, change: median2024 && median2025 ? (median2025 - median2024) / median2024 * 100 : null };
+        }).filter((item) => item.change != null).sort((a, b) => b.change - a.change || a.name.localeCompare(b.name));
+        const largestChange = q4Items[0];
+        const decreases = q4Items.filter((item) => item.change < 0);
+        document.querySelector("#q4-answer").innerHTML = `<strong>Largest increase:</strong> ${largestChange.name}, ${decimal.format(largestChange.change)}%. <strong>Decreases:</strong> ${decreases.length ? decreases.map((item) => `${item.name} (${decimal.format(item.change)}%)`).join("; ") : "none"}.`;
+        document.querySelector("#q4-table").innerHTML = q4Items.map((item) => `<tr><td>${item.name}</td><td>${currency.format(item.median2024)}</td><td>${currency.format(item.median2025)}</td><td>${item.change >= 0 ? "+" : ""}${decimal.format(item.change)}%</td></tr>`).join("");
+        renderSlopeChart(q4Items);
+
+        // Q5
+        const q5Items = [...group(validRows, (row) => row.university).entries()].map(([name, rows]) => {
+          const days = [];
+          rows.forEach((row) => {
+            if (!row.list_date || !row.contract_date) return;
+            const list = Date.parse(row.list_date), contract = Date.parse(row.contract_date);
+            if (Number.isFinite(list) && Number.isFinite(contract)) days.push((contract - list) / 86400000);
+          });
+          return { name, median: median(days), count: days.length };
+        }).filter((item) => item.median != null).sort((a, b) => b.median - a.median || a.name.localeCompare(b.name));
+        const slowest = maxTie(q5Items, (item) => item.median);
+        const fastest = minTie(q5Items, (item) => item.median);
+        document.querySelector("#q5-answer").innerHTML = `<strong>Slowest:</strong> ${slowest.join("; ")}, ${decimal.format(Math.max(...q5Items.map((item) => item.median)))} median days. <strong>Fastest:</strong> ${fastest.join("; ")}, ${decimal.format(Math.min(...q5Items.map((item) => item.median)))} median days.`;
+        document.querySelector("#q5-table").innerHTML = q5Items.map((item) => `<tr><td>${item.name}</td><td>${decimal.format(item.median)}</td><td>${integer.format(item.count)}</td></tr>`).join("");
+        renderDotPlot(q5Items);
+
+        statusTargets.forEach((target) => { if (target.classList.contains("error")) target.classList.remove("error"); });
       } catch (error) {
-        status.className = "status error";
-        status.textContent = `Unable to load the dataset: ${error.message}`;
+        statusTargets.forEach((target) => { target.className = "answer error"; target.textContent = `Unable to load the dataset: ${error.message}`; });
       }
     }
-
     load();
   </script>
 </body>
