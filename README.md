@@ -1,4 +1,4 @@
-# [Your site's title]
+# College-Town Home Sales Explorer
 
 ## Start here (delete this section before you submit)
 
@@ -28,19 +28,19 @@ Don't edit any of the five dataset files. Your site needs only the CSV file. The
 
 ## What this site is for
 
-_Replace this line with your site's question and audience, or a short description of the site._
+Explore Q1–Q5 about home-sale prices and days on market across 18 cities and 11 university campus areas.
 
 ## Live site
 
-https://your-username.github.io/your-repo-name/
+https://aki1005.github.io/campustown-home-sales/
 
 ## Data notes
 
-_Replace this line. Say which rows you left out and why, and how each figure on the site is defined. "Five things that will bite you" in the description sheet lists the problems to cover._
+Q1 and Q4–Q5 use sales with `sale_price` from $10,000 through $5,000,000, inclusive, except where a question explicitly uses all rows. Q2 uses all rows. Q3 compares ranking with all rows and with that valid-price range. Days on market is `contract_date - list_date`; rows missing either date are excluded rather than treated as zero. Street addresses are not deduplicated, because `listing_id` is the sale key.
 
 ## Tools we used
 
-_Replace this line with your AI coding agent or agents, and any libraries and other tools you used._
+Plain HTML, CSS, JavaScript, and SVG charts. The CSV is loaded with a relative path and all statistics are calculated in the browser.
 
 ## Citation
 

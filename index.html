@@ -57,6 +57,15 @@
     .error { color: #a52b2b; }
     footer { padding: 0 0 2.5rem; color: var(--muted); font-size: .9rem; }
     footer a { color: var(--accent-dark); }
+    .controls { display: flex; flex-wrap: wrap; gap: .75rem; align-items: end; margin: 1rem 0; }
+    .field { display: grid; gap: .35rem; }
+    .field label { color: var(--muted); font-size: .82rem; font-weight: 700; }
+    .field input, .field select { min-height: 42px; border: 1px solid var(--line); border-radius: 9px; background: #fff; color: var(--ink); padding: .55rem .7rem; }
+    .metric { display: inline-block; margin: .25rem .5rem .75rem 0; padding: .75rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: #f8fafc; }
+    .metric strong { display: block; color: var(--accent-dark); font-size: 1.35rem; }
+    .metric span { color: var(--muted); font-size: .82rem; }
+    .line-chart { fill: none; stroke: var(--accent); stroke-width: 3; }
+    .month-dot { fill: var(--accent); }
     @media (max-width: 640px) {
       .wrap { width: min(100% - 1rem, 1120px); }
       header { padding: 3rem 0 2.5rem; }
@@ -119,6 +128,57 @@
       <p class="subtle">Dot plot: each point is a campus area's median number of days from listing to contract.</p>
       <div class="chart-scroll"><svg id="q5-chart" role="img" aria-label="Q5 median days on market by campus area"></svg></div>
       <div class="table-wrap"><table><thead><tr><th>Campus area</th><th>Median days</th><th>Sales with both dates</th></tr></thead><tbody id="q5-table"></tbody></table></div>
+    </section>
+
+    <section class="panel" id="q6">
+      <h2>Q6. Annual property-tax burden by campus area</h2>
+      <p id="q6-answer" class="answer" role="status">Calculating…</p>
+      <p class="subtle">Tax total divided by sale-price total for filtered sales, shown as a percentage.</p>
+      <div class="chart-scroll"><svg id="q6-chart" role="img" aria-label="Q6 tax burden by campus area"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>Campus area</th><th>Sales used</th><th>Tax as % of sale price</th></tr></thead><tbody id="q6-table"></tbody></table></div>
+    </section>
+
+    <section class="panel" id="q7">
+      <h2>Q7. Lowest median price for an exact bedroom count</h2>
+      <div class="controls">
+        <div class="field"><label for="q7-beds">Bedrooms</label><select id="q7-beds"></select></div>
+      </div>
+      <p id="q7-answer" class="answer" role="status">Calculating…</p>
+      <div class="chart-scroll"><svg id="q7-chart" role="img" aria-label="Q7 median prices by bedroom count"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>City</th><th>Sales</th><th>Median sale price</th></tr></thead><tbody id="q7-table"></tbody></table></div>
+    </section>
+
+    <section class="panel" id="q8">
+      <h2>Q8. Shortest median days on market for a price range</h2>
+      <div class="controls">
+        <div class="field"><label for="q8-min">Minimum sale price</label><input id="q8-min" type="number" min="10000" max="5000000" value="10000" step="1000"></div>
+        <div class="field"><label for="q8-max">Maximum sale price</label><input id="q8-max" type="number" min="10000" max="5000000" value="400000" step="1000"></div>
+      </div>
+      <p id="q8-answer" class="answer" role="status">Calculating…</p>
+      <div class="chart-scroll"><svg id="q8-chart" role="img" aria-label="Q8 median days on market by city"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>City</th><th>Sales used</th><th>Median days</th></tr></thead><tbody id="q8-table"></tbody></table></div>
+    </section>
+
+    <section class="panel" id="q9">
+      <h2>Q9. Monthly sales for a city and year</h2>
+      <div class="controls">
+        <div class="field"><label for="q9-city">City</label><select id="q9-city"></select></div>
+        <div class="field"><label for="q9-year">Year</label><select id="q9-year"></select></div>
+      </div>
+      <p id="q9-answer" class="answer" role="status">Calculating…</p>
+      <div class="chart-scroll"><svg id="q9-chart" role="img" aria-label="Q9 monthly sales line chart"></svg></div>
+      <div class="table-wrap"><table><thead><tr><th>Month</th><th>Sales</th></tr></thead><tbody id="q9-table"></tbody></table></div>
+    </section>
+
+    <section class="panel" id="q10">
+      <h2>Q10. Median campus distance for a buyer budget</h2>
+      <div class="controls">
+        <div class="field"><label for="q10-campus">Campus area</label><select id="q10-campus"></select></div>
+        <div class="field"><label for="q10-budget">Maximum budget</label><input id="q10-budget" type="number" min="10000" max="5000000" value="400000" step="1000"></div>
+        <div class="field"><label for="q10-beds">Minimum bedrooms</label><input id="q10-beds" type="number" min="0" value="3" step="1"></div>
+      </div>
+      <p id="q10-answer" class="answer" role="status">Calculating…</p>
+      <div class="chart-scroll"><svg id="q10-chart" role="img" aria-label="Q10 matching-sale distance chart"></svg></div>
     </section>
   </main>
 
@@ -250,6 +310,58 @@
       svg.innerHTML = parts.join("");
     }
 
+    function renderVerticalBars(svgId, items, valueFn, labelFn, formatter) {
+      const svg = document.querySelector(svgId);
+      const width = 900, left = 55, right = 25, top = 30, bottom = 65;
+      const height = 430, plotWidth = width - left - right, plotHeight = height - top - bottom;
+      const max = Math.max(1, ...items.map(valueFn)) * 1.12;
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      const parts = [];
+      for (let i = 0; i <= 5; i++) {
+        const y = top + plotHeight * i / 5;
+        parts.push(`<line class="gridline" x1="${left}" y1="${y}" x2="${width - right}" y2="${y}"></line>`);
+        parts.push(`<text class="axis-label" x="${left - 8}" y="${y + 4}" text-anchor="end">${formatter(max * (5 - i) / 5)}</text>`);
+      }
+      const slot = plotWidth / items.length;
+      items.forEach((item, i) => {
+        const value = valueFn(item);
+        const barHeight = plotHeight * value / max;
+        const x = left + i * slot + slot * .18;
+        const barWidth = slot * .64;
+        const y = top + plotHeight - barHeight;
+        parts.push(`<rect class="bar" x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="4"><title>${labelFn(item)}: ${formatter(value)}</title></rect>`);
+        parts.push(`<text class="value-label" x="${x + barWidth / 2}" y="${Math.max(top + 10, y - 7)}" text-anchor="middle">${formatter(value)}</text>`);
+        parts.push(`<text class="axis-label" x="${x + barWidth / 2}" y="${height - 40}" text-anchor="end" transform="rotate(-35 ${x + barWidth / 2} ${height - 40})">${labelFn(item)}</text>`);
+      });
+      svg.innerHTML = parts.join("");
+    }
+
+    function renderLineChart(svgId, items) {
+      const svg = document.querySelector(svgId);
+      const width = 900, left = 65, right = 35, top = 25, bottom = 55;
+      const height = 400, plotWidth = width - left - right, plotHeight = height - top - bottom;
+      const max = Math.max(1, ...items.map((item) => item.count));
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      const points = items.map((item, i) => {
+        const x = left + plotWidth * i / (items.length - 1);
+        const y = top + plotHeight - plotHeight * item.count / max;
+        return { ...item, x, y };
+      });
+      const parts = [];
+      for (let i = 0; i <= 5; i++) {
+        const y = top + plotHeight * i / 5;
+        parts.push(`<line class="gridline" x1="${left}" y1="${y}" x2="${width - right}" y2="${y}"></line>`);
+        parts.push(`<text class="axis-label" x="${left - 8}" y="${y + 4}" text-anchor="end">${integer.format(max * (5 - i) / 5)}</text>`);
+      }
+      parts.push(`<polyline class="line-chart" points="${points.map((item) => `${item.x},${item.y}`).join(" ")}"></polyline>`);
+      points.forEach((item) => {
+        parts.push(`<circle class="month-dot" cx="${item.x}" cy="${item.y}" r="6"><title>${item.name}: ${integer.format(item.count)} sales</title></circle>`);
+        parts.push(`<text class="value-label" x="${item.x}" y="${item.y - 10}" text-anchor="middle">${integer.format(item.count)}</text>`);
+        parts.push(`<text class="axis-label" x="${item.x}" y="${height - 25}" text-anchor="middle">${item.name}</text>`);
+      });
+      svg.innerHTML = parts.join("");
+    }
+
     async function load() {
       const statusTargets = document.querySelectorAll(".answer");
       try {
@@ -326,6 +438,139 @@
         document.querySelector("#q5-answer").innerHTML = `<strong>Slowest:</strong> ${slowest.join("; ")}, ${decimal.format(Math.max(...q5Items.map((item) => item.median)))} median days. <strong>Fastest:</strong> ${fastest.join("; ")}, ${decimal.format(Math.min(...q5Items.map((item) => item.median)))} median days.`;
         document.querySelector("#q5-table").innerHTML = q5Items.map((item) => `<tr><td>${item.name}</td><td>${decimal.format(item.median)}</td><td>${integer.format(item.count)}</td></tr>`).join("");
         renderDotPlot(q5Items);
+
+        // Q6
+        const q6Items = [...campusGroups.entries()].map(([name, rows]) => {
+          const taxRows = rows.filter((row) => {
+            const price = Number(row.sale_price);
+            const tax = Number(row.tax_annual_amount);
+            return Number.isFinite(price) && Number.isFinite(tax) && tax > 0 && tax < price * 0.10;
+          });
+          const taxTotal = taxRows.reduce((sum, row) => sum + Number(row.tax_annual_amount), 0);
+          const priceTotal = taxRows.reduce((sum, row) => sum + Number(row.sale_price), 0);
+          return { name, count: taxRows.length, burden: priceTotal ? taxTotal / priceTotal * 100 : null };
+        }).filter((item) => item.burden != null).sort((a, b) => b.burden - a.burden || a.name.localeCompare(b.name));
+        const q6Highest = maxTie(q6Items, (item) => item.burden);
+        const q6Lowest = minTie(q6Items, (item) => item.burden);
+        document.querySelector("#q6-answer").innerHTML = `<strong>Highest tax burden:</strong> ${q6Highest.join("; ")}, ${decimal.format(Math.max(...q6Items.map((item) => item.burden)))}%. <strong>Lowest tax burden:</strong> ${q6Lowest.join("; ")}, ${decimal.format(Math.min(...q6Items.map((item) => item.burden)))}%.`;
+        document.querySelector("#q6-table").innerHTML = q6Items.map((item) => `<tr><td>${item.name}</td><td>${integer.format(item.count)}</td><td>${decimal.format(item.burden)}%</td></tr>`).join("");
+        renderHorizontalBars("#q6-chart", q6Items, (item) => item.burden, (item) => item.name, (value) => `${decimal.format(value)}%`);
+
+        // Q7
+        const q7BedSelect = document.querySelector("#q7-beds");
+        const bedValues = [...new Set(allRows.map((row) => Number(row.beds)).filter(Number.isFinite))].sort((a, b) => a - b);
+        q7BedSelect.innerHTML = bedValues.map((beds) => `<option value="${beds}">${integer.format(beds)}</option>`).join("");
+        function updateQ7() {
+          const beds = Number(q7BedSelect.value);
+          const q7Items = [...group(validRows, cityKey).entries()].map(([name, rows]) => {
+            const matches = rows.filter((row) => Number(row.beds) === beds);
+            return { name, count: matches.length, median: median(matches.map((row) => Number(row.sale_price))) };
+          }).sort((a, b) => a.name.localeCompare(b.name));
+          const eligible = q7Items.filter((item) => item.median != null);
+          const lowest = eligible.length ? minTie(eligible, (item) => item.median) : [];
+          document.querySelector("#q7-answer").innerHTML = lowest.length
+            ? `<strong>Lowest median for ${integer.format(beds)} bedrooms:</strong> ${lowest.join("; ")}, ${currency.format(Math.min(...eligible.map((item) => item.median)))}.`
+            : `<strong>No sales meet the exact ${integer.format(beds)}-bedroom filter.</strong>`;
+          document.querySelector("#q7-table").innerHTML = q7Items.map((item) => `<tr><td>${item.name}</td><td>${integer.format(item.count)}</td><td>${item.median == null ? "No sales" : currency.format(item.median)}</td></tr>`).join("");
+          renderVerticalBars("#q7-chart", q7Items.filter((item) => item.median != null), (item) => item.median, (item) => item.name, (value) => currency.format(value));
+          if (!eligible.length) document.querySelector("#q7-chart").innerHTML = "";
+        }
+        q7BedSelect.addEventListener("change", updateQ7);
+        updateQ7();
+
+        // Q8
+        function updateQ8() {
+          let min = Number(document.querySelector("#q8-min").value);
+          let max = Number(document.querySelector("#q8-max").value);
+          if (!Number.isFinite(min)) min = PRICE_MIN;
+          if (!Number.isFinite(max)) max = PRICE_MAX;
+          const low = Math.max(PRICE_MIN, Math.min(min, PRICE_MAX));
+          const high = Math.max(PRICE_MIN, Math.min(max, PRICE_MAX));
+          const rangeLow = Math.min(low, high), rangeHigh = Math.max(low, high);
+          const q8Items = [...group(validRows, cityKey).entries()].map(([name, rows]) => {
+            const matches = rows.filter((row) => {
+              const price = Number(row.sale_price);
+              if (price < rangeLow || price > rangeHigh) return false;
+              return row.list_date && row.contract_date;
+            }).map((row) => (Date.parse(row.contract_date) - Date.parse(row.list_date)) / 86400000).filter(Number.isFinite);
+            return { name, count: matches.length, median: median(matches) };
+          }).sort((a, b) => a.name.localeCompare(b.name));
+          const eligible = q8Items.filter((item) => item.median != null);
+          const fastest = eligible.length ? minTie(eligible, (item) => item.median) : [];
+          document.querySelector("#q8-answer").innerHTML = fastest.length
+            ? `<strong>Shortest median for ${currency.format(rangeLow)}–${currency.format(rangeHigh)}:</strong> ${fastest.join("; ")}, ${decimal.format(Math.min(...eligible.map((item) => item.median)))} days.`
+            : `<strong>No sales in ${currency.format(rangeLow)}–${currency.format(rangeHigh)} have both listing and contract dates.</strong>`;
+          document.querySelector("#q8-table").innerHTML = q8Items.map((item) => `<tr><td>${item.name}</td><td>${integer.format(item.count)}</td><td>${item.median == null ? "No sales" : decimal.format(item.median)}</td></tr>`).join("");
+          renderVerticalBars("#q8-chart", eligible, (item) => item.median, (item) => item.name, (value) => `${decimal.format(value)} days`);
+          if (!eligible.length) document.querySelector("#q8-chart").innerHTML = "";
+        }
+        document.querySelector("#q8-min").addEventListener("input", updateQ8);
+        document.querySelector("#q8-max").addEventListener("input", updateQ8);
+        updateQ8();
+
+        // Q9
+        const q9City = document.querySelector("#q9-city");
+        const q9Year = document.querySelector("#q9-year");
+        const cities = [...new Set(allRows.map(cityKey))].sort();
+        const years = [...new Set(allRows.map((row) => row.sale_date ? row.sale_date.slice(0, 4) : "").filter((year) => /^\d{4}$/.test(year)))].sort((a, b) => b.localeCompare(a));
+        q9City.innerHTML = cities.map((city) => `<option value="${city}">${city}</option>`).join("");
+        q9Year.innerHTML = years.map((year) => `<option value="${year}">${year}</option>`).join("");
+        function updateQ9() {
+          const city = q9City.value, year = q9Year.value;
+          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          const counts = monthNames.map((name, i) => {
+            const month = i + 1;
+            return {
+              name,
+              count: allRows.filter((row) => cityKey(row) === city && row.sale_date && row.sale_date.slice(0, 4) === year && Number(row.sale_date.slice(5, 7)) === month).length
+            };
+          });
+          const maxCount = Math.max(...counts.map((item) => item.count));
+          const peakMonths = counts.filter((item) => item.count === maxCount).map((item) => item.name);
+          document.querySelector("#q9-answer").innerHTML = `<strong>Peak month${peakMonths.length > 1 ? "s" : ""}:</strong> ${peakMonths.join("; ")}, with ${integer.format(maxCount)} sales in ${city} for ${year}.`;
+          document.querySelector("#q9-table").innerHTML = counts.map((item) => `<tr><td>${item.name}</td><td>${integer.format(item.count)}</td></tr>`).join("");
+          renderLineChart("#q9-chart", counts);
+        }
+        q9City.addEventListener("change", updateQ9);
+        q9Year.addEventListener("change", updateQ9);
+        updateQ9();
+
+        // Q10
+        const q10Campus = document.querySelector("#q10-campus");
+        const campusNames = [...new Set(validRows.map((row) => row.university))].sort();
+        q10Campus.innerHTML = campusNames.map((name) => `<option value="${name}">${name}</option>`).join("");
+        function updateQ10() {
+          const campus = q10Campus.value;
+          let budget = Number(document.querySelector("#q10-budget").value);
+          if (!Number.isFinite(budget)) budget = 400000;
+          budget = Math.max(PRICE_MIN, Math.min(budget, PRICE_MAX));
+          const beds = Math.max(0, Number(document.querySelector("#q10-beds").value) || 0);
+          const matches = validRows.filter((row) => row.university === campus && Number(row.sale_price) <= budget && Number(row.beds) >= beds);
+          const medianDistance = median(matches.map((row) => Number(row.miles_to_campus)).filter(Number.isFinite));
+          document.querySelector("#q10-answer").innerHTML = `<div class="metric"><strong>${medianDistance == null ? "No sales" : decimal.format(medianDistance) + " miles"}</strong><span>Median distance</span></div><div class="metric"><strong>${integer.format(matches.length)}</strong><span>Sales meeting conditions</span></div><p>${campus}; maximum budget ${currency.format(budget)}; minimum ${integer.format(beds)} bedrooms.</p>`;
+          const svg = document.querySelector("#q10-chart");
+          if (!matches.length) { svg.innerHTML = ""; return; }
+          const distances = matches.map((row) => Number(row.miles_to_campus)).filter(Number.isFinite).sort((a, b) => a - b);
+          const width = 900, left = 70, right = 50, top = 35, bottom = 55, height = 220;
+          const plotWidth = width - left - right;
+          const max = Math.max(15, ...distances);
+          const parts = [`<text class="axis-label" x="${left}" y="18">Distance to campus (miles)</text>`];
+          for (let i = 0; i <= 5; i++) {
+            const x = left + plotWidth * i / 5;
+            parts.push(`<line class="gridline" x1="${x}" y1="${top}" x2="${x}" y2="${height - bottom}"></line>`);
+            parts.push(`<text class="axis-label" x="${x}" y="${height - 25}" text-anchor="middle">${decimal.format(max * i / 5)}</text>`);
+          }
+          const xMedian = left + plotWidth * medianDistance / max;
+          parts.push(`<line x1="${xMedian}" y1="${top}" x2="${xMedian}" y2="${height - bottom}" stroke="#16835a" stroke-width="4"></line>`);
+          parts.push(`<circle cx="${xMedian}" cy="${top + 70}" r="12" fill="#16835a"><title>Median: ${decimal.format(medianDistance)} miles</title></circle>`);
+          parts.push(`<text class="value-label" x="${xMedian + 16}" y="${top + 74}">Median ${decimal.format(medianDistance)} miles</text>`);
+          svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+          svg.innerHTML = parts.join("");
+        }
+        q10Campus.addEventListener("change", updateQ10);
+        document.querySelector("#q10-budget").addEventListener("input", updateQ10);
+        document.querySelector("#q10-beds").addEventListener("input", updateQ10);
+        updateQ10();
 
         statusTargets.forEach((target) => { if (target.classList.contains("error")) target.classList.remove("error"); });
       } catch (error) {
