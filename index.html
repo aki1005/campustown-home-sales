@@ -18,6 +18,16 @@
       --good: #16835a;
       --bad: #bd4b4b;
     }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --ink: #edf3ff;
+      --muted: #b1bdd1;
+      --line: #344156;
+      --panel: #182235;
+      --page: #0d1524;
+      --accent: #78a7ef;
+      --accent-dark: #b7d1fa;
+    }
     * { box-sizing: border-box; }
     body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     .wrap { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
@@ -70,7 +80,8 @@
     .controls { display: flex; flex-wrap: wrap; gap: .75rem; align-items: end; margin: 1rem 0; }
     .field { display: grid; gap: .35rem; }
     .field label { color: var(--muted); font-size: .82rem; font-weight: 700; }
-    .field input, .field select { min-height: 42px; border: 1px solid var(--line); border-radius: 9px; background: #fff; color: var(--ink); padding: .55rem .7rem; }
+    .field input, .field select { min-height: 42px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); color: var(--ink); padding: .55rem .7rem; }
+    .field input[type="range"] { min-height: 28px; padding: 0; }
     .metric { display: inline-block; margin: .25rem .5rem .75rem 0; padding: .75rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: #f8fafc; }
     .metric strong { display: block; color: var(--accent-dark); font-size: 1.35rem; }
     .metric span { color: var(--muted); font-size: .82rem; }
@@ -81,18 +92,44 @@
     .p1-bar { fill: #8aa4ca; }
     .p1-bar-highlight { fill: #bd4b4b; }
     .p1-zero { fill: #f0a500; }
+    .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .7fr); gap: 1rem; align-items: start; }
+    .map-panel { border: 1px solid var(--line); border-radius: 12px; padding: .5rem; background: var(--panel); }
+    #location-map { min-width: 0; width: 100%; height: auto; background: linear-gradient(135deg, #edf4ff, #f8fafc); border-radius: 8px; }
+    html[data-theme="dark"] #location-map { background: linear-gradient(135deg, #1d2a40, #111a29); }
+    .map-point { cursor: pointer; fill: var(--accent); stroke: var(--panel); stroke-width: 2; }
+    .map-point:hover, .map-point.selected { fill: #f0a500; }
+    .comparison-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+    .comparison-card { border: 1px solid var(--line); border-radius: 12px; padding: .85rem; background: var(--panel); }
+    .comparison-card strong { display: block; font-size: 1.15rem; color: var(--accent-dark); }
+    .theme-toggle, .button { border: 1px solid var(--line); border-radius: 9px; background: var(--panel); color: var(--ink); min-height: 42px; padding: .55rem .75rem; cursor: pointer; }
+    .theme-toggle { position: absolute; right: max(1rem, calc((100vw - 1120px) / 2)); top: 1rem; }
+    th button { border: 0; background: none; color: inherit; font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; padding: 0; }
+    th button::after { content: " ↕"; opacity: .55; }
+    .methods { display: grid; gap: .75rem; }
+    .methods details { border: 1px solid var(--line); border-radius: 10px; padding: .75rem 1rem; }
+    .methods summary { cursor: pointer; font-weight: 700; }
+    .range-row { display: grid; grid-template-columns: minmax(180px, 1fr) 110px 110px; gap: .5rem; align-items: end; }
+    @media (max-width: 900px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
     @media (max-width: 640px) {
       .wrap { width: min(100% - 1rem, 1120px); }
       header { padding: 3rem 0 2.5rem; }
       main { padding-top: 1rem; }
       .panel { padding: 1rem; border-radius: 14px; }
       th, td { padding: .7rem .45rem; }
+      .comparison-grid { grid-template-columns: 1fr; }
+      .range-row { grid-template-columns: 1fr 1fr; }
+      .range-row .field:first-child { grid-column: 1 / -1; }
+      .theme-toggle { right: .5rem; top: .5rem; }
+      h1 { padding-right: 3.5rem; }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode">Dark mode</button>
       <p class="subtle">A data view of 35,442 completed sales around college towns</p>
       <h1>College-Town Home Sales Explorer</h1>
       <p class="lede">Compare median prices, campus-area trends, and time on market across the dataset.</p>
@@ -113,6 +150,62 @@
       price range and requires both listing and contract dates. Q9 counts sales by closing month for
       the chosen city and year. Q10 uses valid-price rows, the chosen campus, a maximum budget, and
       a minimum bedroom count; missing bedroom values do not meet the minimum.
+    </section>
+
+    <section class="panel" id="dashboard-filters" aria-labelledby="filter-heading">
+      <h2 id="filter-heading">Explore and compare sales</h2>
+      <p class="subtle">Filters apply together to the summary, map, comparison, and results table.</p>
+      <div class="controls">
+        <div class="field"><label for="filter-location">Location</label><select id="filter-location"><option value="">All locations</option></select></div>
+        <div class="field"><label for="filter-year">Year</label><select id="filter-year"><option value="">All years</option></select></div>
+        <div class="field"><label for="filter-beds">Bedrooms</label><select id="filter-beds"><option value="">Any</option></select></div>
+        <div class="field"><label for="filter-price-min">Minimum price</label><input id="filter-price-min" type="number" min="0" step="10000" value="10000"></div>
+        <div class="field"><label for="filter-price-max">Maximum price</label><input id="filter-price-max" type="number" min="0" step="10000" value="5000000"></div>
+        <div class="field"><label for="filter-feature">Property feature</label><select id="filter-feature"><option value="">Any feature</option><option value="has_garage">Garage</option><option value="has_basement">Basement</option><option value="has_fireplace">Fireplace</option></select></div>
+        <div class="field"><label for="filter-feature-state">Feature state</label><select id="filter-feature-state"><option value="">Any</option><option value="1">Yes</option><option value="0">No</option><option value="unknown">Unknown</option></select></div>
+        <button id="reset-filters" class="button" type="button">Reset filters</button>
+        <button id="share-filters" class="button" type="button">Copy share link</button>
+      </div>
+      <div class="range-row" aria-label="Living area range">
+        <div class="field"><label for="filter-living-range">Living area range (sq ft)</label><input id="filter-living-range" type="range" min="0" max="10000" step="50" value="10000"><input id="filter-living-range-min" type="range" min="0" max="10000" step="50" value="0" aria-label="Minimum living area"></div>
+        <div class="field"><label for="filter-living-min">Minimum</label><input id="filter-living-min" type="number" min="0" step="50" value="0"></div>
+        <div class="field"><label for="filter-living-max">Maximum</label><input id="filter-living-max" type="number" min="0" step="50" value="10000"></div>
+      </div>
+      <div class="dashboard-grid">
+        <div>
+          <div id="dashboard-kpis" aria-live="polite"></div>
+          <div class="chart-scroll"><svg id="filtered-price-chart" role="img" aria-label="Median sale price for the filtered locations"></svg></div>
+        </div>
+        <div class="map-panel">
+          <h3>Location map</h3>
+          <svg id="location-map" role="img" aria-label="Interactive location map"></svg>
+          <p id="map-status" class="subtle">Select a location point to filter the dashboard.</p>
+        </div>
+      </div>
+      <h3>Compare two locations</h3>
+      <div class="controls">
+        <div class="field"><label for="compare-a">Location A</label><select id="compare-a"></select></div>
+        <div class="field"><label for="compare-b">Location B</label><select id="compare-b"></select></div>
+      </div>
+      <div class="comparison-grid" id="comparison-output"></div>
+    </section>
+
+    <section class="panel" id="results" aria-labelledby="results-heading">
+      <h2 id="results-heading">Filtered results</h2>
+      <p id="results-count" class="subtle" aria-live="polite"></p>
+      <div class="table-wrap">
+        <table id="results-table">
+          <thead><tr>
+            <th><button type="button" data-sort="address_street">Address</button></th>
+            <th><button type="button" data-sort="city">Location</button></th>
+            <th><button type="button" data-sort="sale_date">Sale date</button></th>
+            <th><button type="button" data-sort="sale_price">Sale price</button></th>
+            <th><button type="button" data-sort="beds">Beds</button></th>
+            <th><button type="button" data-sort="living_area_sqft">Living area</button></th>
+          </tr></thead>
+          <tbody id="results-table-body"></tbody>
+        </table>
+      </div>
     </section>
 
     <section class="panel" id="q1">
@@ -204,6 +297,28 @@
       </div>
       <p id="q10-answer" class="answer" role="status">Calculating…</p>
       <div class="chart-scroll"><svg id="q10-chart" role="img" aria-label="Q10 matching-sale distance chart"></svg></div>
+    </section>
+
+    <section class="panel" id="data-methods" aria-labelledby="methods-heading">
+      <h2 id="methods-heading">Data &amp; Methods</h2>
+      <div class="methods">
+        <details open>
+          <summary>Price rules</summary>
+          <p>Analysis medians and the dashboard summary use sale prices of at least $10,000 and no more than $5,000,000, inclusive. This excludes implausibly low and high values documented in the data description. Dashboard filter prices use the same bounds unless a user sets different controls.</p>
+        </details>
+        <details>
+          <summary>Days on market</summary>
+          <p>Days on market is <code>contract_date - list_date</code>, calculated only when both dates are available and parseable. <code>sale_date - list_date</code> is closing time, not days on market, and missing dates are excluded rather than treated as zero.</p>
+        </details>
+        <details>
+          <summary>Missing data</summary>
+          <p>Unknown property-feature values are kept as unknown. They are not converted to No. Living areas equal to 0 or blank are excluded from the living-area range. The 127 zero living-area values and other source blanks are documented in the data description. Repeated addresses and parcel-number cases remain distinct rows identified by <code>listing_id</code>.</p>
+        </details>
+        <details>
+          <summary>Dataset citation</summary>
+          <p>College-town home sales dataset, version 1.0 (2026). University of Illinois-Deloitte Foundation Center for Business Emerging Technologies. Data collected March 2026. Source values were not independently verified against county records. <a href="docs/data_description_sheet.md">Read the data description sheet</a>.</p>
+        </details>
+      </div>
     </section>
 
     <section class="panel" id="insights" aria-labelledby="insights-heading">
@@ -469,6 +584,271 @@
         if (!response.ok) throw new Error(`Dataset request failed (${response.status})`);
         const allRows = parseCsv(await response.text());
         const validRows = allRows.filter(validPrice);
+
+        // Part 3 dashboard filters
+        const locationSelect = document.querySelector("#filter-location");
+        const yearSelect = document.querySelector("#filter-year");
+        const bedsSelect = document.querySelector("#filter-beds");
+        const priceMinInput = document.querySelector("#filter-price-min");
+        const priceMaxInput = document.querySelector("#filter-price-max");
+        const livingMinInput = document.querySelector("#filter-living-min");
+        const livingMaxInput = document.querySelector("#filter-living-max");
+        const livingMaxRange = document.querySelector("#filter-living-range");
+        const livingMinRange = document.querySelector("#filter-living-range-min");
+        const featureSelect = document.querySelector("#filter-feature");
+        const featureStateSelect = document.querySelector("#filter-feature-state");
+        const dashboardCities = [...new Set(allRows.map(cityKey))].sort();
+        const dashboardYears = [...new Set(allRows.map((row) => row.sale_date ? row.sale_date.slice(0, 4) : "").filter((year) => /^\d{4}$/.test(year)))].sort((a, b) => b.localeCompare(a));
+        const dashboardBedValues = [...new Set(allRows.map((row) => Number(row.beds)).filter((value) => Number.isFinite(value)))].sort((a, b) => a - b);
+        locationSelect.insertAdjacentHTML("beforeend", dashboardCities.map((city) => `<option value="${city}">${city}</option>`).join(""));
+        yearSelect.insertAdjacentHTML("beforeend", dashboardYears.map((year) => `<option value="${year}">${year}</option>`).join(""));
+        bedsSelect.insertAdjacentHTML("beforeend", dashboardBedValues.map((beds) => `<option value="${beds}">${integer.format(beds)}</option>`).join(""));
+        const livingValues = allRows.map((row) => Number(row.living_area_sqft)).filter((value) => Number.isFinite(value) && value > 0);
+        const livingCeiling = Math.ceil(Math.max(...livingValues) / 500) * 500;
+        [livingMaxRange, livingMaxInput].forEach((control) => control.max = livingCeiling);
+        [livingMinRange, livingMinInput].forEach((control) => control.max = livingCeiling);
+        livingMaxRange.value = livingCeiling;
+        livingMaxInput.value = livingCeiling;
+
+        const compareA = document.querySelector("#compare-a");
+        const compareB = document.querySelector("#compare-b");
+        compareA.innerHTML = dashboardCities.map((city) => `<option value="${city}">${city}</option>`).join("");
+        compareB.innerHTML = dashboardCities.map((city) => `<option value="${city}">${city}</option>`).join("");
+        if (dashboardCities.length > 1) compareB.value = dashboardCities[1];
+
+        let tableRows = [];
+        let tableSort = { key: "sale_date", direction: "desc" };
+
+        function featureMatches(row) {
+          const feature = featureSelect.value;
+          const state = featureStateSelect.value;
+          if (!feature || !state) return true;
+          const value = row[feature];
+          if (state === "unknown") return value === "" || value == null;
+          return value === state;
+        }
+
+        function getFilteredRows() {
+          const location = locationSelect.value;
+          const year = yearSelect.value;
+          const beds = bedsSelect.value;
+          const priceMin = Number(priceMinInput.value);
+          const priceMax = Number(priceMaxInput.value);
+          const livingMin = Number(livingMinInput.value);
+          const livingMax = Number(livingMaxInput.value);
+          return allRows.filter((row) => {
+            if (location && cityKey(row) !== location) return false;
+            if (year && (!row.sale_date || row.sale_date.slice(0, 4) !== year)) return false;
+            if (beds && Number(row.beds) !== Number(beds)) return false;
+            const price = Number(row.sale_price);
+            if (Number.isFinite(priceMin) && price < priceMin) return false;
+            if (Number.isFinite(priceMax) && price > priceMax) return false;
+            const living = Number(row.living_area_sqft);
+            if (livingMin > 0 && (!Number.isFinite(living) || living < livingMin)) return false;
+            if (livingMax !== livingCeiling && (!Number.isFinite(living) || living > livingMax)) return false;
+            return featureMatches(row);
+          });
+        }
+
+        function syncLivingSource(source) {
+          if (source === "min") {
+            let value = Math.min(Number(livingMinInput.value), Number(livingMaxInput.value));
+            livingMinInput.value = value;
+            livingMinRange.value = value;
+          } else if (source === "max") {
+            let value = Math.max(Number(livingMinInput.value), Number(livingMaxInput.value));
+            livingMaxInput.value = value;
+            livingMaxRange.value = value;
+          }
+        }
+
+        function syncUrl() {
+          const params = new URLSearchParams();
+          if (locationSelect.value) params.set("location", locationSelect.value);
+          if (yearSelect.value) params.set("year", yearSelect.value);
+          if (bedsSelect.value) params.set("beds", bedsSelect.value);
+          params.set("priceMin", priceMinInput.value);
+          params.set("priceMax", priceMaxInput.value);
+          params.set("livingMin", livingMinInput.value);
+          params.set("livingMax", livingMaxInput.value);
+          if (featureSelect.value) params.set("feature", featureSelect.value);
+          if (featureStateSelect.value) params.set("featureState", featureStateSelect.value);
+          if (compareA.value) params.set("compareA", compareA.value);
+          if (compareB.value) params.set("compareB", compareB.value);
+          const query = params.toString();
+          history.replaceState(null, "", query ? `${location.pathname}?${query}` : location.pathname);
+        }
+
+        function restoreUrl() {
+          const params = new URLSearchParams(location.search);
+          const setSelect = (select, value) => { if (value && [...select.options].some((option) => option.value === value)) select.value = value; };
+          setSelect(locationSelect, params.get("location"));
+          setSelect(yearSelect, params.get("year"));
+          setSelect(bedsSelect, params.get("beds"));
+          ["priceMin", "priceMax", "livingMin", "livingMax"].forEach((key) => {
+            const value = params.get(key);
+            if (value != null) {
+              const control = { priceMin: priceMinInput, priceMax: priceMaxInput, livingMin: livingMinInput, livingMax: livingMaxInput }[key];
+              control.value = value;
+            }
+          });
+          setSelect(featureSelect, params.get("feature"));
+          setSelect(featureStateSelect, params.get("featureState"));
+          setSelect(compareA, params.get("compareA"));
+          setSelect(compareB, params.get("compareB"));
+          livingMinRange.value = livingMinInput.value;
+          livingMaxRange.value = livingMaxInput.value;
+        }
+
+        function renderMap(filtered) {
+          const svg = document.querySelector("#location-map");
+          const width = 600, height = 360, pad = 30;
+          const points = [...group(allRows, cityKey).entries()].map(([name, rows]) => {
+            const lat = mean(rows.map((row) => Number(row.latitude)).filter(Number.isFinite));
+            const lng = mean(rows.map((row) => Number(row.longitude)).filter(Number.isFinite));
+            const count = filtered.filter((row) => cityKey(row) === name).length;
+            return { name, lat, lng, count };
+          }).filter((item) => Number.isFinite(item.lat) && Number.isFinite(item.lng));
+          const lats = points.map((item) => item.lat), lngs = points.map((item) => item.lng);
+          const minLat = Math.min(...lats), maxLat = Math.max(...lats), minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
+          const maxCount = Math.max(1, ...points.map((item) => item.count));
+          svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+          const parts = [`<rect x="0" y="0" width="${width}" height="${height}" rx="8" fill="none" stroke="var(--line)"></rect>`];
+          points.forEach((item) => {
+            const x = pad + (item.lng - minLng) / (maxLng - minLng || 1) * (width - pad * 2);
+            const y = height - pad - (item.lat - minLat) / (maxLat - minLat || 1) * (height - pad * 2);
+            const radius = 7 + 13 * item.count / maxCount;
+            const selected = locationSelect.value === item.name ? " selected" : "";
+            parts.push(`<circle class="map-point${selected}" data-city="${item.name}" cx="${x}" cy="${y}" r="${radius}"><title>${item.name}: ${integer.format(item.count)} filtered sales</title></circle>`);
+            parts.push(`<text class="axis-label" x="${x}" y="${y - radius - 4}" text-anchor="middle">${item.name.split(",")[0]}</text>`);
+          });
+          svg.innerHTML = parts.join("");
+          svg.querySelectorAll(".map-point").forEach((point) => point.addEventListener("click", () => {
+            locationSelect.value = locationSelect.value === point.dataset.city ? "" : point.dataset.city;
+            applyDashboard();
+          }));
+        }
+
+        function renderTable(rows) {
+          tableRows = [...rows];
+          const key = tableSort.key;
+          const direction = tableSort.direction === "asc" ? 1 : -1;
+          tableRows.sort((a, b) => {
+            let av = a[key] ?? "", bv = b[key] ?? "";
+            if (["sale_price", "beds", "living_area_sqft"].includes(key)) { av = Number(av); bv = Number(bv); if (!Number.isFinite(av)) av = -Infinity; if (!Number.isFinite(bv)) bv = -Infinity; }
+            if (typeof av === "string") return av.localeCompare(bv) * direction;
+            return (av - bv) * direction;
+          });
+          document.querySelector("#results-count").textContent = `${integer.format(tableRows.length)} matching sales`;
+          document.querySelector("#results-table-body").innerHTML = tableRows.slice(0, 500).map((row) =>
+            `<tr><td>${row.address_street || "Unknown"}</td><td>${cityKey(row)}</td><td>${row.sale_date || "Unknown"}</td><td>${currency.format(Number(row.sale_price) || 0)}</td><td>${row.beds === "" ? "Unknown" : row.beds}</td><td>${row.living_area_sqft === "" ? "Unknown" : integer.format(Number(row.living_area_sqft))}</td></tr>`
+          ).join("");
+        }
+
+        function renderComparison(filtered) {
+          const compare = (city) => {
+            const rows = filtered.filter((row) => cityKey(row) === city);
+            const prices = rows.map((row) => Number(row.sale_price)).filter((price) => Number.isFinite(price) && price >= PRICE_MIN && price <= PRICE_MAX);
+            const days = rows.map((row) => row.list_date && row.contract_date ? (Date.parse(row.contract_date) - Date.parse(row.list_date)) / 86400000 : null).filter((value) => Number.isFinite(value));
+            return { sales: rows.length, price: median(prices), days: median(days) };
+          };
+          const ca = compare(compareA.value), cb = compare(compareB.value);
+          document.querySelector("#comparison-output").innerHTML = [
+            [compareA.value, ca], [compareB.value, cb]
+          ].map(([name, values]) => `<div class="comparison-card"><h3>${name}</h3><strong>${values.price == null ? "No median" : currency.format(values.price)}</strong><span class="subtle">Median sale price</span><p>${integer.format(values.sales)} sales<br>${values.days == null ? "No days-on-market median" : decimal.format(values.days) + " median days"}</p></div>`).join("");
+        }
+
+        function applyDashboard() {
+          const filtered = getFilteredRows();
+          const prices = filtered.map((row) => Number(row.sale_price)).filter((price) => Number.isFinite(price) && price >= PRICE_MIN && price <= PRICE_MAX);
+          document.querySelector("#dashboard-kpis").innerHTML = `<div class="metric"><strong>${prices.length ? currency.format(median(prices)) : "No sales"}</strong><span>Median sale price</span></div><div class="metric"><strong>${integer.format(filtered.length)}</strong><span>Number of sales</span></div>`;
+          const byCity = [...group(filtered, cityKey).entries()].map(([name, rows]) => ({
+            name, median: median(rows.map((row) => Number(row.sale_price)).filter((price) => Number.isFinite(price) && price >= PRICE_MIN && price <= PRICE_MAX))
+          })).filter((item) => item.median != null).sort((a, b) => b.median - a.median);
+          renderHorizontalBars("#filtered-price-chart", byCity, (item) => item.median, (item) => item.name, (value) => currency.format(value), { title: "Filtered median sale price by location", axisLabel: "Median sale price" });
+          if (!byCity.length) document.querySelector("#filtered-price-chart").innerHTML = "<text class=\"label\" x=\"450\" y=\"200\" text-anchor=\"middle\">No matching sales</text>";
+          renderMap(filtered);
+          renderComparison(filtered);
+          renderTable(filtered);
+          syncUrl();
+          document.querySelector("#map-status").textContent = `${integer.format(filtered.length)} sales match the active filters.`;
+        }
+
+        restoreUrl();
+
+        livingMinRange.addEventListener("input", () => {
+          livingMinInput.value = livingMinRange.value;
+          if (Number(livingMinInput.value) > Number(livingMaxInput.value)) livingMaxInput.value = livingMinInput.value;
+          livingMaxRange.value = livingMaxInput.value;
+          applyDashboard();
+        });
+        livingMaxRange.addEventListener("input", () => {
+          livingMaxInput.value = livingMaxRange.value;
+          if (Number(livingMaxInput.value) < Number(livingMinInput.value)) livingMinInput.value = livingMaxInput.value;
+          livingMinRange.value = livingMinInput.value;
+          applyDashboard();
+        });
+        livingMinInput.addEventListener("input", () => {
+          livingMinRange.value = livingMinInput.value;
+          if (Number(livingMinInput.value) > Number(livingMaxInput.value)) livingMaxInput.value = livingMinInput.value;
+          livingMaxRange.value = livingMaxInput.value;
+          applyDashboard();
+        });
+        livingMaxInput.addEventListener("input", () => {
+          livingMaxRange.value = livingMaxInput.value;
+          if (Number(livingMaxInput.value) < Number(livingMinInput.value)) livingMinInput.value = livingMaxInput.value;
+          livingMinRange.value = livingMinInput.value;
+          applyDashboard();
+        });
+        [locationSelect, yearSelect, bedsSelect, priceMinInput, priceMaxInput, featureSelect, featureStateSelect, compareA, compareB].forEach((control) => {
+          control.addEventListener("change", applyDashboard);
+          if (control.tagName === "INPUT") control.addEventListener("input", applyDashboard);
+        });
+        document.querySelector("#reset-filters").addEventListener("click", () => {
+          locationSelect.value = "";
+          yearSelect.value = "";
+          bedsSelect.value = "";
+          priceMinInput.value = "10000";
+          priceMaxInput.value = "5000000";
+          livingMinInput.value = "0";
+          livingMaxInput.value = livingCeiling;
+          livingMinRange.value = "0";
+          livingMaxRange.value = livingCeiling;
+          featureSelect.value = "";
+          featureStateSelect.value = "";
+          applyDashboard();
+        });
+        document.querySelector("#share-filters").addEventListener("click", async () => {
+          syncUrl();
+          try {
+            await navigator.clipboard.writeText(location.href);
+            document.querySelector("#share-filters").textContent = "Link copied";
+            setTimeout(() => document.querySelector("#share-filters").textContent = "Copy share link", 1600);
+          } catch {
+            document.querySelector("#share-filters").textContent = "Copy from address bar";
+          }
+        });
+        document.querySelectorAll("#results-table th button").forEach((button) => button.addEventListener("click", () => {
+          const key = button.dataset.sort;
+          tableSort.direction = tableSort.key === key && tableSort.direction === "asc" ? "desc" : "asc";
+          tableSort.key = key;
+          renderTable(getFilteredRows());
+        }));
+
+        const savedTheme = localStorage.getItem("campustown-theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+        function setTheme(theme) {
+          document.documentElement.dataset.theme = theme;
+          const dark = theme === "dark";
+          document.querySelector("#theme-toggle").textContent = dark ? "Light mode" : "Dark mode";
+          document.querySelector("#theme-toggle").setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+          localStorage.setItem("campustown-theme", theme);
+        }
+        setTheme(initialTheme);
+        document.querySelector("#theme-toggle").addEventListener("click", () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
+
+        applyDashboard();
 
         // Q1
         const q1Items = [...group(validRows, cityKey).entries()].map(([name, rows]) => ({
