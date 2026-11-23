@@ -28,7 +28,7 @@ Don't edit any of the five dataset files. Your site needs only the CSV file. The
 
 ## What this site is for
 
-Explore Q1–Q5 about home-sale prices and days on market across 18 cities and 11 university campus areas.
+Explore Q1–Q10 about home-sale prices, taxes, bedrooms, days on market, seasonality, and campus-area budgets across 18 cities and 11 university campus areas. Part 3 adds an interactive dashboard with filters, a map, comparisons, and sortable results.
 
 ## Live site
 
