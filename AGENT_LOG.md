@@ -35,3 +35,9 @@ Copy this outline for each entry:
 - **Asked:** "我现在已经打开了一新的窗口修改Q1-5 你先搞Q6-10"
 - **Agent produced:** Added Q6-Q10 sections and dynamic controls to the existing page. Added Q6 campus tax-burden totals, Q7 exact-bedroom city medians, Q8 price-range days-on-market medians, Q9 city-and-year monthly counts, and Q10 campus-budget-bedroom distance counts and medians. Added bar, line, and summary chart elements for the new sections.
 - **Checked or changed:** Independently calculated sample Q6-Q10 results in Python and tested Q7 with 3 bedrooms, Q9 with Davis and 2025, and Q10 with Urbana-Champaign, a $400,000 budget, and 3 bedrooms in the browser. Browser results matched the independent calculations. JavaScript syntax and secret scanning passed, and no dataset file was modified.
+
+## 2026-11-23: Completing Part 3 interaction checks
+
+- **Asked:** "part3还有哪些没做完 继续"
+- **Agent produced:** Completed the remaining Part 3 browser checks for location, feature, living-area, comparison, reset, and table-sort interactions, and checked the page at mobile width.
+- **Checked or changed:** Found and fixed mobile horizontal overflow caused by the filtered chart's minimum width inside the dashboard grid by allowing the grid child to shrink. The local browser now reports no horizontal overflow at 390px, loads 19 locations and 35,371 default matching sales, and all tested controls update the dashboard.
