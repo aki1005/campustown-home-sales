@@ -5,33 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>College-Town Home Sales Explorer</title>
   <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: light;
-      --ink: #17233c;
-      --muted: #5e6b82;
-      --line: #dce3ee;
-      --panel: #fff;
-      --page: #f4f7fb;
-      --accent: #2864c7;
-      --accent-dark: #174b9d;
-      --good: #16835a;
-      --bad: #bd4b4b;
+      --ink: #172b45;
+      --muted: #5c6e83;
+      --line: #d7e0e9;
+      --panel: #ffffff;
+      --page: #f3f6f8;
+      --accent: #285d8f;
+      --accent-dark: #1e496f;
+      --accent-soft: #e8f0f7;
+      --highlight: #c76b3d;
+      --highlight-soft: #fbefe8;
+      --chart-muted: #9aafc1;
+      --good: #28775d;
+      --bad: #ad514b;
+      --shadow: 0 12px 32px rgb(23 43 69 / 6%);
+      --focus: #bf683e;
     }
     html[data-theme="dark"] {
       color-scheme: dark;
-      --ink: #edf3ff;
-      --muted: #b1bdd1;
-      --line: #344156;
-      --panel: #182235;
-      --page: #0d1524;
-      --accent: #78a7ef;
-      --accent-dark: #b7d1fa;
+      --ink: #eaf0f5;
+      --muted: #b2c0cd;
+      --line: #344556;
+      --panel: #182532;
+      --page: #101a24;
+      --accent: #86b5d7;
+      --accent-dark: #a9cce3;
+      --accent-soft: #20394c;
+      --highlight: #e29a70;
+      --highlight-soft: #422f29;
+      --chart-muted: #708da4;
+      --good: #72bd9c;
+      --bad: #e1847c;
+      --shadow: 0 12px 32px rgb(0 0 0 / 18%);
+      --focus: #f0a77e;
     }
     * { box-sizing: border-box; }
-    body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.6 "DM Sans", sans-serif; }
     .wrap { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
-    header { padding: 4.5rem 0 3rem; background: linear-gradient(135deg, #102d62, #2864c7); color: #fff; }
+    header { padding: 4.5rem 0 3rem; background: linear-gradient(130deg, #193c5a, #285d8f); color: #fff; }
     header p { margin: 0 0 .75rem; }
     header .subtle { color: #b9d1ff; }
     h1 { max-width: 800px; margin: 0 0 1rem; font-size: clamp(2.2rem, 6vw, 4.4rem); line-height: 1.04; letter-spacing: -.04em; }
