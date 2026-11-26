@@ -50,20 +50,20 @@
     .wrap { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
     header { padding: 4.5rem 0 3rem; background: linear-gradient(130deg, #193c5a, #285d8f); color: #fff; }
     header p { margin: 0 0 .75rem; }
-    header .subtle { color: #b9d1ff; }
-    h1 { max-width: 800px; margin: 0 0 1rem; font-size: clamp(2.2rem, 6vw, 4.4rem); line-height: 1.04; letter-spacing: -.04em; }
-    header .lede { max-width: 700px; margin: 0; color: #dfeaff; font-size: 1.1rem; }
-    main { padding: 2rem 0 4rem; }
-    .intro, .panel { border: 1px solid var(--line); border-radius: 18px; background: var(--panel); box-shadow: 0 10px 30px rgb(23 35 60 / 6%); }
-    .intro { padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+    header .subtle { color: #d2e0eb; }
+    h1 { max-width: 800px; margin: 0 0 1rem; font-size: clamp(2.2rem, 6vw, 4.4rem); line-height: 1.04; letter-spacing: -.04em; font-weight: 700; }
+    header .lede { max-width: 700px; margin: 0; color: #e2edf4; font-size: 1.1rem; }
+    main { padding: 2.25rem 0 4rem; }
+    .intro, .panel { border: 1px solid var(--line); border-radius: 16px; background: var(--panel); box-shadow: var(--shadow); }
+    .intro { padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; border-left: 4px solid var(--accent); background: var(--accent-soft); }
     .intro strong { color: var(--accent-dark); }
-    .panel { padding: 1.5rem; margin-bottom: 1.5rem; scroll-margin-top: 1rem; }
-    h2 { margin: 0 0 .35rem; font-size: 1.35rem; }
-    h3 { margin: 1.25rem 0 .5rem; font-size: 1rem; }
+    .panel { padding: clamp(1.25rem, 2.5vw, 2rem); margin-bottom: 1.25rem; scroll-margin-top: 1rem; }
+    h2 { margin: 0 0 .35rem; font-size: clamp(1.25rem, 2vw, 1.5rem); line-height: 1.3; letter-spacing: -.02em; }
+    h3 { margin: 1.5rem 0 .6rem; font-size: 1.05rem; line-height: 1.35; }
     .subtle { color: var(--muted); }
-    .answer { margin: .8rem 0 1rem; padding: .85rem 1rem; border-left: 4px solid var(--accent); background: #edf4ff; border-radius: 0 10px 10px 0; }
+    .answer { margin: 1rem 0 1.25rem; padding: .9rem 1.1rem; border-left: 4px solid var(--highlight); background: var(--highlight-soft); border-radius: 0 10px 10px 0; }
     .answer strong { color: var(--accent-dark); }
-    .chart-scroll { overflow-x: auto; padding-bottom: .25rem; }
+    .chart-scroll { overflow-x: auto; padding: .35rem 0 .65rem; }
     svg { display: block; min-width: 720px; width: 100%; height: auto; }
     .gridline { stroke: var(--line); stroke-width: 1; }
     .axis-label, .value-label { fill: var(--muted); font-size: 12px; }
@@ -84,23 +84,26 @@
     .bad { fill: var(--bad); }
     .slope-2024 { stroke: #8aa4ca; }
     .slope-2025 { stroke: var(--accent); }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: .75rem .65rem; border-bottom: 1px solid var(--line); text-align: left; }
-    th { color: var(--muted); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { padding: .8rem .75rem; border-bottom: 1px solid var(--line); text-align: left; }
+    th { background: var(--page); color: var(--muted); font-size: .76rem; font-weight: 700; letter-spacing: .055em; text-transform: uppercase; }
     td:not(:first-child), th:not(:first-child) { text-align: right; white-space: nowrap; }
     tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: var(--accent-soft); }
     .status { min-height: 1.5em; color: var(--muted); }
     .error { color: #a52b2b; }
-    footer { padding: 0 0 2.5rem; color: var(--muted); font-size: .9rem; }
+    footer { padding: 1rem 0 2.5rem; color: var(--muted); font-size: .9rem; border-top: 1px solid var(--line); }
     footer a { color: var(--accent-dark); }
-    .controls { display: flex; flex-wrap: wrap; gap: .75rem; align-items: end; margin: 1rem 0; }
-    .field { display: grid; gap: .35rem; }
+    .controls { display: flex; flex-wrap: wrap; gap: .85rem; align-items: end; margin: 1.1rem 0 1.25rem; }
+    .field { display: grid; flex: 1 1 150px; min-width: min(100%, 145px); gap: .4rem; }
     .field label { color: var(--muted); font-size: .82rem; font-weight: 700; }
-    .field input, .field select { min-height: 42px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); color: var(--ink); padding: .55rem .7rem; }
-    .field input[type="range"] { min-height: 28px; padding: 0; }
-    .metric { display: inline-block; margin: .25rem .5rem .75rem 0; padding: .75rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: #f8fafc; }
-    .metric strong { display: block; color: var(--accent-dark); font-size: 1.35rem; }
+    .field input:not([type="range"]), .field select { width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: 9px; background-color: var(--panel); color: var(--ink); padding: .6rem .75rem; font: inherit; }
+    .field select { appearance: none; padding-right: 2.3rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%235c6e83' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right .75rem center; }
+    html[data-theme="dark"] .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b2c0cd' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E"); }
+    .field input[type="range"] { width: 100%; min-height: 28px; padding: 0; accent-color: var(--accent); }
+    .metric { display: inline-block; min-width: 175px; margin: .35rem .65rem .75rem 0; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+    .metric strong { display: block; color: var(--accent-dark); font-size: 1.55rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
     .metric span { color: var(--muted); font-size: .82rem; }
     .line-chart { fill: none; stroke: var(--accent); stroke-width: 3; }
     .month-dot { fill: var(--accent); }
@@ -109,21 +112,30 @@
     .p1-bar { fill: #8aa4ca; }
     .p1-bar-highlight { fill: #bd4b4b; }
     .p1-zero { fill: #f0a500; }
-    .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .7fr); gap: 1rem; align-items: start; }
+    .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr); gap: 1.25rem; align-items: start; margin-top: 1.25rem; }
     .dashboard-grid > div { min-width: 0; }
-    .map-panel { border: 1px solid var(--line); border-radius: 12px; padding: .5rem; background: var(--panel); }
-    #location-map { min-width: 0; width: 100%; height: auto; background: linear-gradient(135deg, #edf4ff, #f8fafc); border-radius: 8px; }
-    html[data-theme="dark"] #location-map { background: linear-gradient(135deg, #1d2a40, #111a29); }
-    .map-point { cursor: pointer; fill: var(--accent); stroke: var(--panel); stroke-width: 2; }
-    .map-point:hover, .map-point.selected { fill: #f0a500; }
+    .map-panel { min-width: 0; border: 1px solid var(--line); border-radius: 12px; padding: 1rem; background: var(--page); }
+    .map-panel h3 { margin: 0 0 .75rem; }
+    #location-map { min-width: 0; width: 100%; height: auto; background: var(--accent-soft); border-radius: 8px; }
+    .map-point { cursor: pointer; fill: var(--accent); stroke: var(--panel); stroke-width: 2; transition: fill .16s ease; }
+    .map-point:hover, .map-point.selected { fill: var(--highlight); }
+    .map-point:focus-visible { outline: none; stroke: var(--focus); stroke-width: 4; }
     .comparison-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
-    .comparison-card { border: 1px solid var(--line); border-radius: 12px; padding: .85rem; background: var(--panel); }
-    .comparison-card strong { display: block; font-size: 1.15rem; color: var(--accent-dark); }
-    .theme-toggle, .button { border: 1px solid var(--line); border-radius: 9px; background: var(--panel); color: var(--ink); min-height: 42px; padding: .55rem .75rem; cursor: pointer; }
-    .theme-toggle { position: absolute; right: max(1rem, calc((100vw - 1120px) / 2)); top: 1rem; }
-    th button { border: 0; background: none; color: inherit; font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; padding: 0; }
-    th button::after { content: " ↕"; opacity: .55; }
-    .methods { display: grid; gap: .75rem; }
+    .comparison-card { border: 1px solid var(--line); border-radius: 12px; padding: 1rem; background: var(--page); }
+    .comparison-card h3 { margin: 0 0 .6rem; font-size: .95rem; }
+    .comparison-card strong { display: block; font-size: 1.4rem; line-height: 1.25; color: var(--accent-dark); }
+    .theme-toggle, .button { border: 1px solid var(--line); border-radius: 9px; background: var(--panel); color: var(--ink); min-height: 44px; padding: .6rem .9rem; font: inherit; font-size: .9rem; font-weight: 700; cursor: pointer; transition: background-color .16s ease, border-color .16s ease, color .16s ease, transform .16s ease; }
+    .button:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .button:active { transform: translateY(1px); }
+    .theme-toggle { position: absolute; right: max(1rem, calc((100vw - 1120px) / 2)); top: 1rem; border-color: rgb(255 255 255 / 35%); background: rgb(255 255 255 / 12%); color: #fff; }
+    .theme-toggle:hover { background: rgb(255 255 255 / 22%); }
+    :where(button, input, select, summary, a, .map-point):focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+    th button { display: inline-flex; align-items: center; gap: .35rem; border: 0; background: none; color: inherit; font: inherit; text-align: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; padding: .15rem 0; }
+    .sort-icon { width: .9rem; height: .9rem; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; opacity: .45; }
+    th[aria-sort="ascending"] .sort-icon { color: var(--accent); opacity: 1; }
+    th[aria-sort="descending"] .sort-icon { color: var(--accent); opacity: 1; transform: rotate(180deg); }
+    .empty-state { padding: 1.25rem; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); text-align: center; }
+    .methods { display: grid; gap: .75rem; margin-top: .75rem; }
     .methods details { border: 1px solid var(--line); border-radius: 10px; padding: .75rem 1rem; }
     .methods summary { cursor: pointer; font-weight: 700; }
     .range-row { display: grid; grid-template-columns: minmax(180px, 1fr) 110px 110px; gap: .5rem; align-items: end; }
@@ -214,12 +226,12 @@
       <div class="table-wrap">
         <table id="results-table">
           <thead><tr>
-            <th><button type="button" data-sort="address_street">Address</button></th>
-            <th><button type="button" data-sort="city">Location</button></th>
-            <th><button type="button" data-sort="sale_date">Sale date</button></th>
-            <th><button type="button" data-sort="sale_price">Sale price</button></th>
-            <th><button type="button" data-sort="beds">Beds</button></th>
-            <th><button type="button" data-sort="living_area_sqft">Living area</button></th>
+            <th><button type="button" data-sort="address_street">Address<svg class="sort-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0-5 5m5-5 5 5"></path></svg></button></th>
+            <th><button type="button" data-sort="city">Location<svg class="sort-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0-5 5m5-5 5 5"></path></svg></button></th>
+            <th aria-sort="descending"><button type="button" data-sort="sale_date">Sale date<svg class="sort-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0-5 5m5-5 5 5"></path></svg></button></th>
+            <th><button type="button" data-sort="sale_price">Sale price<svg class="sort-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0-5 5m5-5 5 5"></path></svg></button></th>
+            <th><button type="button" data-sort="beds">Beds<svg class="sort-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0-5 5m5-5 5 5"></path></svg></button></th>
+            <th><button type="button" data-sort="living_area_sqft">Living area<svg class="sort-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0-5 5m5-5 5 5"></path></svg></button></th>
           </tr></thead>
           <tbody id="results-table-body"></tbody>
         </table>
@@ -737,14 +749,23 @@
             const y = height - pad - (item.lat - minLat) / (maxLat - minLat || 1) * (height - pad * 2);
             const radius = 7 + 13 * item.count / maxCount;
             const selected = locationSelect.value === item.name ? " selected" : "";
-            parts.push(`<circle class="map-point${selected}" data-city="${item.name}" cx="${x}" cy="${y}" r="${radius}"><title>${item.name}: ${integer.format(item.count)} filtered sales</title></circle>`);
+            parts.push(`<circle class="map-point${selected}" data-city="${item.name}" cx="${x}" cy="${y}" r="${radius}" tabindex="0" role="button" aria-pressed="${locationSelect.value === item.name}" aria-label="Filter by ${item.name}, ${integer.format(item.count)} matching sales"><title>${item.name}: ${integer.format(item.count)} filtered sales</title></circle>`);
             parts.push(`<text class="axis-label" x="${x}" y="${y - radius - 4}" text-anchor="middle">${item.name.split(",")[0]}</text>`);
           });
           svg.innerHTML = parts.join("");
-          svg.querySelectorAll(".map-point").forEach((point) => point.addEventListener("click", () => {
-            locationSelect.value = locationSelect.value === point.dataset.city ? "" : point.dataset.city;
-            applyDashboard();
-          }));
+          svg.querySelectorAll(".map-point").forEach((point) => {
+            const toggleCity = () => {
+              locationSelect.value = locationSelect.value === point.dataset.city ? "" : point.dataset.city;
+              applyDashboard();
+            };
+            point.addEventListener("click", toggleCity);
+            point.addEventListener("keydown", (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                toggleCity();
+              }
+            });
+          });
         }
 
         function renderTable(rows) {
@@ -757,10 +778,14 @@
             if (typeof av === "string") return av.localeCompare(bv) * direction;
             return (av - bv) * direction;
           });
+          document.querySelectorAll("#results-table th").forEach((header) => {
+            const active = header.querySelector("button")?.dataset.sort === key;
+            header.setAttribute("aria-sort", active ? (tableSort.direction === "asc" ? "ascending" : "descending") : "none");
+          });
           document.querySelector("#results-count").textContent = `${integer.format(tableRows.length)} matching sales`;
-          document.querySelector("#results-table-body").innerHTML = tableRows.slice(0, 500).map((row) =>
+          document.querySelector("#results-table-body").innerHTML = tableRows.length ? tableRows.slice(0, 500).map((row) =>
             `<tr><td>${row.address_street || "Unknown"}</td><td>${cityKey(row)}</td><td>${row.sale_date || "Unknown"}</td><td>${currency.format(Number(row.sale_price) || 0)}</td><td>${row.beds === "" ? "Unknown" : row.beds}</td><td>${row.living_area_sqft === "" ? "Unknown" : integer.format(Number(row.living_area_sqft))}</td></tr>`
-          ).join("");
+          ).join("") : `<tr><td class="empty-state" colspan="6">No sales match these filters. Try widening the price or living-area range, or reset the filters.</td></tr>`;
         }
 
         function renderComparison(filtered) {
